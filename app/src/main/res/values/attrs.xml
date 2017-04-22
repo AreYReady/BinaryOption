@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomEditText">
+        <attr name="BackgroundColor" format="color" />
+        <attr name="signImage" format="reference" />
+        <attr name="hint" format="string" />
+        <attr name="ll_background_style" format="boolean"/>
+        <attr name="checkCode" >
+            <enum name="GONE" value="8"/>
+            <enum name="INVISIBLE" value="4"/>
+            <enum name="VISIBLE" value="0"/>
+        </attr>
+    </declare-styleable>
+</resources>

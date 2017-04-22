@@ -1,0 +1,35 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/backgrount</item>
+        <item name="colorPrimaryDark">@color/backgrount</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="text_prompt_erro">
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:gravity">right</item>
+    </style>
+
+    <style name="text_desc_">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+    <style name="text_desc_small">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="text_button_style" parent="text_desc_">
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="text_desc_big">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+</resources>

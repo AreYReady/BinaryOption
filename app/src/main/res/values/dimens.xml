@@ -1,0 +1,24 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="v_editText_h">45dp</dimen>
+    <dimen name="v_button_enter_h">33dip</dimen>
+    <dimen name="v_ll_trade_head_h">88dip</dimen>
+    <dimen name="v_tl_h">50dip</dimen>
+
+    <dimen name="space_big">10dip</dimen>
+    <dimen name="space_big_half">5.25dip</dimen>
+    <dimen name="space_micro">1.5dip</dimen>
+    <dimen name="space_mini">3.0dip</dimen>
+    <dimen name="space_nano">0.75dip</dimen>
+    <dimen name="space_normal">6.0dip</dimen>
+    <dimen name="space_small">4.0dip</dimen>
+    <dimen name="space_xbig">14.5dip</dimen>
+    <dimen name="space_xbig_half">7.25dip</dimen>
+    <dimen name="space_xxbig">19.5dip</dimen>
+    <dimen name="space_xxbig_half">9.75dip</dimen>
+    <dimen name="space_xxxbig">27.0dip</dimen>
+    <dimen name="space_xxxbig_half">13.5dip</dimen>
+    <dimen name="space_xxxxbig">39.0dip</dimen>
+</resources>

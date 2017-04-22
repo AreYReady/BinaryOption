@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/backgrount"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="@dimen/v_ll_trade_head_h">
+            <ImageView
+                android:id="@+id/iv_uesr"
+                android:layout_marginLeft="@dimen/space_xxxxbig"
+                android:layout_gravity="center_vertical"
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:src="@mipmap/avatar"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/space_big"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/text_desc_"
+                    android:text="余额（元）"/>
+                <TextView
+                    android:id="@+id/tv_amount"
+                    android:layout_marginTop="@dimen/space_big_half"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/text_desc_"
+                    android:text="￥0.00"
+                    android:textColor="@color/backgrount_edittext_orange"/>
+            </LinearLayout>
+            <FrameLayout
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/b_deposit"
+                    android:layout_width="65dip"
+                    android:layout_height="25dip"
+                    android:layout_gravity="center_vertical"
+                    style="@style/text_button_style"
+                    android:background="@drawable/button_orange"
+                    android:text="入金"/>
+
+                <Button
+                    android:id="@+id/b_withdraw"
+                    android:layout_marginLeft="@dimen/space_big"
+                    style="@style/text_button_style"
+                    android:layout_width="65dip"
+                    android:text="出金"
+                    android:layout_height="25dip"
+                    android:background="@drawable/button_orange"/>
+                </LinearLayout>
+
+            </FrameLayout>
+        </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="@android:color/black"/>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tb_open_or_pend"
+        android:layout_width="match_parent"
+        app:tabTextColor="@android:color/white"
+        app:tabSelectedTextColor="@color/backgrount_button_orange_normal"
+        app:tabIndicatorColor="@android:color/transparent"
+        android:layout_height="35dip">
+
+    </android.support.design.widget.TabLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="@android:color/black"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_trade_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v4.view.ViewPager>
+
+</LinearLayout>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_symbols"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/v_tl_h"
+        app:tabMode="scrollable">
+    </android.support.v7.widget.RecyclerView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        ></FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"        android:layout_marginTop="@dimen/space_xbig"
+
+        android:background="@color/link_gray"></View>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tl_type"
+        android:layout_width="match_parent"
+        app:tabIndicatorColor="@android:color/transparent"
+        app:tabTextColor="@color/text_color_white"
+        app:tabSelectedTextColor="@color/backgrount_button_orange_normal"
+        app:tabTextAppearance="@style/text_desc_"
+        android:layout_height="33dip"
+        >
+    </android.support.design.widget.TabLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="@color/link_gray"></View>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/space_xbig"
+        android:orientation="horizontal">
+        <FrameLayout
+            android:id="@+id/b_up"
+            android:layout_width="120dip"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_red_dark">
+
+        <LinearLayout
+            android:layout_width="120dip"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/space_xbig"
+                android:gravity="center_vertical|right"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_up_amount"
+                    style="@style/text_desc_big"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="52659"/>
+
+                <TextView
+                    style="@style/text_desc_"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="买涨"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="25dip"
+                android:layout_height="25dip"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/index_up"/>
+        </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/b_down"
+            android:layout_width="120dip"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/space_xxxbig"
+            android:background="@android:color/holo_green_dark">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25dip"
+                    android:layout_height="25dip"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/index_down"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|right"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_down_amount"
+                        style="@style/text_desc_big"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="52659"/>
+
+                    <TextView
+                        style="@style/text_desc_"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="买跌"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/text_desc_"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/space_xxxbig"
+        android:layout_marginTop="@dimen/space_xbig"
+        android:gravity="center"
+        android:text="每周一早上06:00-周六凌晨04:00 凌晨04:00-06:00系统结算"/>
+</LinearLayout>
