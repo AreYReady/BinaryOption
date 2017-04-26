@@ -22,7 +22,7 @@ import java.util.List;
  * TODO:分时图 k线图
  */
 
-public class CustomStockChar extends View {
+public class CustomKLink extends View {
     private Paint mPaintLink;
     private Paint mPaintFill;
     private Paint mTextPaint;
@@ -53,15 +53,15 @@ public class CustomStockChar extends View {
     private boolean isAgain=true;
 
 
-    public CustomStockChar(Context context) {
+    public CustomKLink(Context context) {
         this(context,null);
     }
 
-    public CustomStockChar(Context context, AttributeSet attrs) {
+    public CustomKLink(Context context, AttributeSet attrs) {
         this(context, attrs,0);
     }
 
-    public CustomStockChar(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomKLink(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr);
     }
