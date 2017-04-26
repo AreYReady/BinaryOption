@@ -3,7 +3,7 @@ package com.xkj.binaryoption.utils.SSLSOCKET;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.xkj.binaryoption.bean.BeanOrderRecord;
+import com.xkj.binaryoption.bean.BeanHistoryOrder;
 import com.xkj.binaryoption.bean.BeanOrderResponse;
 import com.xkj.binaryoption.bean.BeanServerTime;
 import com.xkj.binaryoption.bean.BeanSymbolConfig;
@@ -83,7 +83,7 @@ public class SSLDecoderImp implements Decoder<String> {
                 case MessageType.TYPE_BINARY_ALL_SYMBOL://所有产品列表
                     Log.i(TAG, "handleResult:所有产品列表=  "+resultMessage);
                     EventBusAllSymbol allSymbol = new Gson().fromJson(resultMessage, EventBusAllSymbol.class);
-                    EventBus.getDefault().post(allSymbol);
+                    EventBus.getDefault().postSticky(allSymbol);
                     break;
                 case MessageType.TYPE_BINARY_SYMBOLE_SHOW://要展示的产品
                     BeanSymbolConfig symbolShow = new Gson().fromJson(resultMessage, BeanSymbolConfig.class);
@@ -92,15 +92,17 @@ public class SSLDecoderImp implements Decoder<String> {
                     break;
                 case MessageType.TYPE_BINARY_ACTIVE_ORDER_LIST://进行中订单
                     Log.i(TAG, "handleResult:进行中订单=  "+resultMessage);
-                    BeanOrderRecord orderRecord = new Gson().fromJson(resultMessage, BeanOrderRecord.class);
+                    BeanHistoryOrder orderRecord = new Gson().fromJson(resultMessage, BeanHistoryOrder.class);
                     EventBus.getDefault().postSticky(orderRecord);
                     break;
                 case MessageType.TYPE_BINARY_HISTORY_RESULT://历史已完成订单
-                    EventBus.getDefault().postSticky(new DataEvent(resultMessage, MessageType.TYPE_BINARY_HISTORY_RESULT));
+//                    EventBus.getDefault().postSticky(new DataEvent(resultMessage, MessageType.TYPE_BINARY_HISTORY_RESULT));
+                    BeanHistoryOrder beanHistoryOrder=new Gson().fromJson(resultMessage,BeanHistoryOrder.class);
+                    EventBus.getDefault().postSticky(beanHistoryOrder);
                     Log.i(TAG, "handleResult:历史已完成订单=  "+resultMessage);
                     break;
                 case MessageType.TYPE_BINARY_TRADE_NOTIFY://订单通知结果
-                    EventBus.getDefault().post(new DataEvent(resultMessage, MessageType.TYPE_BINARY_TRADE_NOTIFY));
+                    EventBus.getDefault().post(new Gson().fromJson(resultMessage,BeanOrderResponse.class));
                     Log.i(TAG, "handleResult:订单通知结果=  "+resultMessage);
                 break;
                 case MessageType.TYPE_BINARY_REAL_TIME_LIST://发送实时数据

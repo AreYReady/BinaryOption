@@ -4,12 +4,15 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="backgrount">#292929</color>
-    <color name="backgrount_button_orange">#ffb029</color>
-    <color name="backgrount_button_orange_normal">#fe853c</color>
-    <color name="backgrount_edittext_gray">#4d4c5f</color>
-    <color name="backgrount_edittext_orange">#ffffb029</color>
-    <color name="backgrount_edittext_orange_normal">#55fe853c</color>
+    <color name="background">#292929</color>
+    <color name="background_char">#222222</color>
+    <color name="background_button_orange">#ffb029</color>
+    <color name="background_button_orange_normal">#fe853c</color>
+    <color name="background_button_green_normal">#24bd49</color>
+    <color name="background_button_green">#9024bd49</color>
+    <color name="background_edittext_gray">#4d4c5f</color>
+    <color name="background_edittext_orange">#ffffb029</color>
+    <color name="background_edittext_orange_normal">#55fe853c</color>
     <color name="link_gray">#3e3e3e</color>
     <color name="text_color_white">@android:color/white</color>
     <color name="trans_black">#77000000</color>

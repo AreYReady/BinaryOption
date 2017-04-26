@@ -15,11 +15,8 @@ import android.widget.TextView;
 import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.base.BaseActivity;
 import com.xkj.binaryoption.base.BaseFragment;
-import com.xkj.binaryoption.bean.BeanSymbolConfig;
 import com.xkj.binaryoption.mvp.trade.opening.OpenFragment;
 import com.xkj.binaryoption.mvp.trade.pending.PendFragment;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +48,13 @@ public class TradeActivity extends BaseActivity {
     private List<String> mStrings=new ArrayList<>();
     private String allSymbol;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_trade);
         ButterKnife.bind(this);
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -81,6 +80,7 @@ public class TradeActivity extends BaseActivity {
         mStrings.add("持仓记录");
         mVpTradeContent.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
         mTbOpenOrPend.setupWithViewPager(mVpTradeContent);
+
     }
 
     @OnClick({R.id.iv_uesr, R.id.b_deposit, R.id.b_withdraw})
@@ -114,10 +114,4 @@ public class TradeActivity extends BaseActivity {
            return mStrings.get(position);
        }
    }
-    @Subscribe(sticky = true)
-    public void eventSubSymbols(BeanSymbolConfig beanSymbolConfig){
-
-    }
-
-
 }

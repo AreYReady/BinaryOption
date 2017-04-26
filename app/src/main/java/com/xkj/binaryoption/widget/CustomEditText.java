@@ -50,7 +50,7 @@ public class CustomEditText extends FrameLayout {
             int attr = typedArray.getIndex(i);
             switch (attr) {
                 case R.styleable.CustomEditText_BackgroundColor:
-                    color = typedArray.getColor(attr, getResources().getColor(R.color.backgrount_edittext_gray));
+                    color = typedArray.getColor(attr, getResources().getColor(R.color.background_edittext_gray));
                     break;
                 case R.styleable.CustomEditText_hint:
                     hint = typedArray.getString(attr);

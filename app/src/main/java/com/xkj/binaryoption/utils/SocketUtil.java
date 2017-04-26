@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.xkj.binaryoption.BuildConfig;
 import com.xkj.binaryoption.bean.BeanUserLoginLogin;
+import com.xkj.binaryoption.constant.MyConstant;
 import com.xkj.binaryoption.constant.ServerIP;
 import com.xkj.binaryoption.handler.HandlerWrite;
 import com.xkj.binaryoption.utils.SSLSOCKET.Decoder;
@@ -344,7 +345,9 @@ public class SocketUtil {
             sslSocketChannel = SSLSocketChannel.open(address, encoder, decoder, 1024*1024, 1024*1024);
             Log.i("123", "doLogin: Channel opened, initial handshake done");
             Log.i("123", "doLogin: Sending request");
-            String[] user = CacheUtil.getUserInfo(context);
+            String[] user = new String[]{};
+            user[0]=ACache.get(context).getAsString(MyConstant.user_name);
+            user[1]=ACache.get(context).getAsString(MyConstant.user_password);
             BeanUserLoginLogin userLogin = new BeanUserLoginLogin(Integer.valueOf(user[0]), user[1]);
             String loginStr = new Gson().toJson(userLogin, BeanUserLoginLogin.class);
             sslSocketChannel.send(loginStr);

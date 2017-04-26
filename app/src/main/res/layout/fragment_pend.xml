@@ -8,7 +8,7 @@
 <android.support.design.widget.TabLayout
     android:id="@+id/tb_now_or_history"
     android:layout_width="match_parent"
-    app:tabSelectedTextColor="@color/backgrount_button_orange_normal"
+    app:tabSelectedTextColor="@color/background_button_orange_normal"
     app:tabTextColor="@color/text_color_white"
     android:layout_height="@dimen/v_tl_h">
 </android.support.design.widget.TabLayout>

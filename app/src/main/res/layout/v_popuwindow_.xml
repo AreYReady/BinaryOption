@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+    >
+
+    <LinearLayout
+        android:id="@+id/ll_popuwindow_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/background"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tv_action_title"
+            style="@style/text_desc_"
+            android:layout_width="match_parent"
+            android:layout_height="37dip"
+            android:background="@color/background_button_orange_normal"
+            android:gravity="center"
+            android:text="比特币/买跌"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space_xxbig"
+            android:layout_marginTop="@dimen/space_xxxbig"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                style="@style/text_desc_"
+                android:text="快速选择："/>
+
+            <RadioGroup
+                android:id="@+id/rg_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checkedButton="@+id/rb_100"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_100"
+                    style="@style/text_desc_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/space_big_half"
+                    android:background="@drawable/button_select_orange"
+                    android:button="@null"
+                    android:padding="@dimen/space_big_half"
+                    android:tag="100"
+                    android:text="100元"/>
+
+                <RadioButton
+                    style="@style/text_desc_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/space_big_half"
+                    android:background="@drawable/button_select_orange"
+                    android:button="@null"
+                    android:padding="@dimen/space_big_half"
+                    android:tag="200"
+                    android:text="200元"/>
+
+                <RadioButton
+                    style="@style/text_desc_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/space_big_half"
+                    android:background="@drawable/button_select_orange"
+                    android:button="@null"
+                    android:padding="@dimen/space_big_half"
+                    android:tag="500"
+                    android:text="500元"/>
+
+                <RadioButton
+                    style="@style/text_desc_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/space_big_half"
+                    android:background="@drawable/button_select_orange"
+                    android:button="@null"
+                    android:padding="@dimen/space_big_half"
+                    android:tag="1000"
+                    android:text="1000元"/>
+
+                <RadioButton
+                    style="@style/text_desc_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/space_big_half"
+                    android:background="@drawable/button_select_orange"
+                    android:button="@null"
+                    android:padding="@dimen/space_big_half"
+                    android:tag="2000"
+                    android:text="2000元"/>
+
+                <RadioButton
+                    style="@style/text_desc_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/space_big_half"
+                    android:background="@drawable/button_select_orange"
+                    android:button="@null"
+                    android:padding="@dimen/space_big_half"
+                    android:tag="5000"
+                    android:text="5000元"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space_xxbig"
+            android:layout_marginTop="@dimen/space_xxxbig"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/text_desc_"
+                android:layout_gravity="center_vertical"
+                android:text="时间周期："/>
+
+            <RadioGroup
+                android:id="@+id/rg_time_period"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/space_xxbig"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/text_desc_small"
+                android:text="当前价格："/>
+
+            <TextView
+                android:id="@+id/tv_current_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/text_desc_small"
+                android:text="1234.45"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/space_xxxbig"
+                style="@style/text_desc_small"
+                android:text="预期收益："/>
+
+            <TextView
+                android:id="@+id/tv_expect_profit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/text_desc_small"
+                />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/b_enter"
+            style="@style/text_desc_"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/v_button_enter_h"
+            android:layout_margin="@dimen/space_xxbig"
+            android:background="@drawable/button_orange"
+            android:gravity="center"
+            android:text="确定"
+            />
+    </LinearLayout>
+</RelativeLayout>

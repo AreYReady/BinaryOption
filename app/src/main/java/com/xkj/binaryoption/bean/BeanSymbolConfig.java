@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author xjunda
- * @date 2016-09-12
- * 服务器配置的保证金，到期时间，派息比例，等
- * @link TradeIndexActivity # onGetSymbolShow   sticky = true
+ * @author huangsc
+ * @date 2017-4-12
+ * 服务器配置的保证金，到期时间，派息比例,已经可以展示的产品列表
  */
 public class BeanSymbolConfig {
 

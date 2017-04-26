@@ -3,10 +3,11 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/backgrount</item>
-        <item name="colorPrimaryDark">@color/backgrount</item>
+        <item name="colorPrimary">@color/background</item>
+        <item name="colorPrimaryDark">@color/background</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:listDivider">@drawable/rv_item_decoration</item>
     </style>
 
     <style name="text_prompt_erro">
@@ -23,6 +24,10 @@
         <item name="android:textSize">11sp</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+    <style name="text_desc_small_xx">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 
     <style name="text_button_style" parent="text_desc_">
         <item name="android:gravity">center</item>
@@ -31,5 +36,9 @@
     <style name="text_desc_big">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">17sp</item>
+    </style>
+    <style name="take_photo_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/bottom_pop_enter_</item>
+        <item name="android:windowExitAnimation">@anim/bottom_pop_exit_</item>
     </style>
 </resources>

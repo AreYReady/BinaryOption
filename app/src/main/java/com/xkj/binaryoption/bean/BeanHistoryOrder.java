@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author xjunda
- * @date 2016-08-03
- * @link TradeIndexActivity # onGetActiviteOrder    sticky = true
+ * 历史订单记录
  */
-public class BeanOrderRecord implements Parcelable {
+public class BeanHistoryOrder implements Parcelable {
     private int ordercount;
     private int count;
     private int msg_type;
@@ -39,21 +37,21 @@ public class BeanOrderRecord implements Parcelable {
      */
     private List<BeanOrderResult> orders = new ArrayList<>();
 
-    protected BeanOrderRecord(Parcel in) {
+    protected BeanHistoryOrder(Parcel in) {
         ordercount = in.readInt();
         count = in.readInt();
         msg_type = in.readInt();
     }
 
-    public static final Creator<BeanOrderRecord> CREATOR = new Creator<BeanOrderRecord>() {
+    public static final Creator<BeanHistoryOrder> CREATOR = new Creator<BeanHistoryOrder>() {
         @Override
-        public BeanOrderRecord createFromParcel(Parcel in) {
-            return new BeanOrderRecord(in);
+        public BeanHistoryOrder createFromParcel(Parcel in) {
+            return new BeanHistoryOrder(in);
         }
 
         @Override
-        public BeanOrderRecord[] newArray(int size) {
-            return new BeanOrderRecord[size];
+        public BeanHistoryOrder[] newArray(int size) {
+            return new BeanHistoryOrder[size];
         }
     };
 

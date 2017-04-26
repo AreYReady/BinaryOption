@@ -2,13 +2,21 @@ package com.xkj.binaryoption.mvp.trade.pending.history;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.xkj.binaryoption.R;
+import com.xkj.binaryoption.adapter.HistoryAdapter;
 import com.xkj.binaryoption.base.BaseFragment;
+import com.xkj.binaryoption.bean.BeanHistoryOrder;
+import com.xkj.binaryoption.widget.DividerItemDecoration;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +47,7 @@ public class HistoryFragment extends BaseFragment {
 
     @Override
     protected void initRegister() {
-
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -51,5 +59,13 @@ public class HistoryFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        EventBus.getDefault().unregister(this);
+    }
+    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
+    public void EventHistoryOrder(BeanHistoryOrder beanHistoryOrder){
+        mRvHistoryInfo.setAdapter(new HistoryAdapter(mContext,beanHistoryOrder));
+        mRvHistoryInfo.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvHistoryInfo.addItemDecoration(new DividerItemDecoration(mContext,
+                DividerItemDecoration.VERTICAL_LIST));
     }
 }

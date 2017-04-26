@@ -17,10 +17,12 @@ import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.bean.BeanSymbolConfig;
 import com.xkj.binaryoption.bean.ResponseEvent;
+import com.xkj.binaryoption.constant.MyConstant;
 import com.xkj.binaryoption.message.MessageLostPassword;
 import com.xkj.binaryoption.message.MessageSignUp;
 import com.xkj.binaryoption.mvp.login.p.LoginPresenterCompl;
 import com.xkj.binaryoption.mvp.trade.TradeActivity;
+import com.xkj.binaryoption.utils.ACache;
 import com.xkj.binaryoption.utils.AesEncryptionUtil;
 import com.xkj.binaryoption.utils.CacheUtil;
 import com.xkj.binaryoption.utils.SSLSOCKET.SSLSocketChannel;
@@ -91,6 +93,7 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        EventBus.getDefault().unregister(this);
     }
 
     @OnClick({R.id.b_login, R.id.b_sign_up,R.id.tv_lost_password})
@@ -129,6 +132,8 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
         if (code == 0) {
             CacheUtil.saveuserInfo(mContext, mCetAccount.getText().toString(),
                     AesEncryptionUtil.encrypt(mCetPassword.getText().toString()));
+            ACache.get(mContext).put(MyConstant.user_name,mCetAccount.getText().toString());
+            ACache.get(mContext).put(MyConstant.user_password,AesEncryptionUtil.encrypt(mCetPassword.getText().toString()));
         } else {
             if(code==-100){//服务器出错，超时等
                 showToast("网路或者服务器出错了，请稍后重试");
@@ -149,7 +154,7 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetAllSymbol(BeanSymbolConfig allSymbol) {
         startActivity(new Intent(mContext, TradeActivity.class).putExtra(TradeActivity.ALL_SYMBOLS_DATA,new Gson().toJson(allSymbol,BeanSymbolConfig.class)));
-       getActivity().finish();
+        getActivity().finish();
         Log.i(SystemUtil.getTAG(this), "onGetAllSymbol: ");
     }
 }
