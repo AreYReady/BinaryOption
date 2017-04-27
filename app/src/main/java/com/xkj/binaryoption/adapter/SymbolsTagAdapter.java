@@ -98,7 +98,7 @@ public class SymbolsTagAdapter extends RecyclerView.Adapter<MyHolder> {
 //            @Override
 //            public void onClick(View view) {
 //                setCurrentSymbol(mBeanSymbolTags.get(position).getSymbol());
-//                eventRealTimeChar(mRealTimeDataMap);
+//                refreshTimeLink(mRealTimeDataMap);
 //                notifyItemChanged(mPosition);
 //                isChange=true;
 //                mPosition = position;

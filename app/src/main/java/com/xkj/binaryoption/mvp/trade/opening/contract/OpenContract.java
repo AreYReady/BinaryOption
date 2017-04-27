@@ -16,11 +16,6 @@ public class OpenContract {
 public interface View{
    void eventRealTimeData(RealTimeDataList realTimeDataList);
 
-    /**
-     * 刷新分时图，k线图
-     * @param beanRealTimes
-     */
-    void eventRealTimeChar(Map<String,List<RealTimeDataList.BeanRealTime>> beanRealTimes);
     void eventAllSymbolsData(Map<String,Integer> mAllSymbolsDigits);
 }
 

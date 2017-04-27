@@ -45,6 +45,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +93,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     private String mPeriod = "m5";
     private int bar_count = 60;
     private Map<String, Integer> mAllSymbolsDigits;
-    private Map<String, List<RealTimeDataList.BeanRealTime>> mRealTimeDataMap;
+    private Map<String, List<RealTimeDataList.BeanRealTime>> mRealTimeDataMap = new ArrayMap<>();
     private Map<String, BeanHistoryPrices> mHistoryPricesMap = new ArrayMap<>();
 
     /**
@@ -118,11 +119,11 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
             public void onClick(int position, String symbols) {
                 mPosition = position;
                 setCurrentSymbol(mBeanSymbolTags.get(position).getSymbol());
-                eventRealTimeChar(mRealTimeDataMap);
-                if(mHistoryPricesMap.containsKey(symbols+"_"+DataUtil.selectPeriod(mPeriod))){
-                    mCklContent.postInvalidate(mHistoryPricesMap.get(symbols+"_"+DataUtil.selectPeriod(mPeriod)));
-                }else{
-                    mPresenter.sendHistoryPrices(new BeanHistoryRequest(symbols,bar_count,mPeriod));
+                refreshTimeLink(mRealTimeDataMap);
+                if (mHistoryPricesMap.containsKey(symbols + "_" + DataUtil.selectPeriod(mPeriod))) {
+                    mCklContent.postInvalidate(mHistoryPricesMap.get(symbols + "_" + DataUtil.selectPeriod(mPeriod)));
+                } else {
+                    mPresenter.sendHistoryPrices(new BeanHistoryRequest(symbols, bar_count, mPeriod));
                 }
             }
         });
@@ -153,6 +154,19 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mPeriod = tab.getTag().toString();
+                if (tab.getTag().toString().contains("fenshi")) {
+                    mCstContent.setVisibility(View.VISIBLE);
+                    mCklContent.setVisibility(View.GONE);
+                } else {
+                    if (mCstContent.getVisibility() != View.GONE) {
+                        mCstContent.setVisibility(View.GONE);
+                    }
+                    if (mCklContent.getVisibility() != View.VISIBLE) {
+                        mCklContent.setVisibility(View.VISIBLE);
+                    }
+                    sendHistoryPrices();
+                }
+
             }
 
             @Override
@@ -186,13 +200,20 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
             mDupBeanSymbolTags.add(new BeanSymbolTag(symbolsBean.getDesc(), symbolsBean.getSymbol(), "0.0", true));
             mPresenter.sendSubSymbol(symbolsBean.getSymbol());
         }
-
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    private void sendHistoryPrices() {
+        if (mHistoryPricesMap.containsKey(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod))) {
+            mCklContent.postInvalidate(mHistoryPricesMap.get(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod)));
+        } else {
+            mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, bar_count, mPeriod));
+        }
     }
 
     public void showPopFormBottom(MyConstant.BuyAciton buyAciton) {
@@ -227,12 +248,87 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
      *
      * @param realTimeDataList
      */
+    private boolean isRefresh = false;
+
     @Override
     public void eventRealTimeData(RealTimeDataList realTimeDataList) {
         Log.i(TAG, "eventRealTimeData: ");
+        refreshSymbolsTag(realTimeDataList);
+        refreshRealTimeLink(realTimeDataList);
+        refreshKLink(realTimeDataList);
+    }
+
+    /**
+     * 刷新K线图数据
+     *
+     * @param realTimeDataList
+     */
+
+    private void refreshKLink(RealTimeDataList realTimeDataList) {
+        String symbolm5;
+        String symbolm15;
+        String symbolmh1;
+        String symbolmd1;
+        for (RealTimeDataList.BeanRealTime beanRealTime : realTimeDataList.getQuotes()) {
+            if (mHistoryPricesMap.containsKey(symbolm5 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("m5")))) {
+                //娶最后的时间进行计算，如果还没超过当前时间点，那么时间有效，计算最后一个时间，如果时间超过，删除第一个时间点，增加一个新的时间点
+            }
+            if (mHistoryPricesMap.containsKey(symbolm15 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("m15")))) {
+
+            }
+            if (mHistoryPricesMap.containsKey(symbolmh1 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("h1")))) {
+
+            }
+            if (mHistoryPricesMap.containsKey(symbolmd1 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("d1")))) {
+
+            }
+            if (beanRealTime.getSymbol().equals(mCurrentSymbol)) {
+                //是当前商品，刷新k线图
+                if (mHistoryPricesMap.containsKey(mCurrentSymbol.concat("_" + DataUtil.selectPeriod(mPeriod))))
+                    mCklContent.postInvalidate(mHistoryPricesMap.get(mCurrentSymbol.concat("_" + DataUtil.selectPeriod(mPeriod))), beanRealTime);
+                else
+                    mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, bar_count, mPeriod));
+            }
+        }
+    }
+
+    /**
+     * 刷新分时图的实施数据
+     *
+     * @param realTimeDataList
+     */
+    private void refreshRealTimeLink(RealTimeDataList realTimeDataList) {
+        Log.i(TAG, "refreshRealTimeLink: 刷新分时图实时数据");
+        for (RealTimeDataList.BeanRealTime beanRealTime : realTimeDataList.getQuotes()) {
+            //判断是是否存在，存在则判断是否大于80，不存在则添加
+            if (mRealTimeDataMap.containsKey(beanRealTime.getSymbol())) {
+                if (mRealTimeDataMap.get(beanRealTime.getSymbol()).size() > 80) {
+                    mRealTimeDataMap.get(beanRealTime.getSymbol()).remove(0);
+                }
+                mRealTimeDataMap.get(beanRealTime.getSymbol()).add(beanRealTime);
+            } else {
+                LinkedList<RealTimeDataList.BeanRealTime> timeLinkedList = new LinkedList<>();
+                timeLinkedList.add(beanRealTime);
+                mRealTimeDataMap.put(beanRealTime.getSymbol(), timeLinkedList);
+            }
+            if (mCurrentSymbol.equals(beanRealTime.getSymbol()))
+                isRefresh = true;
+        }
+        if (isRefresh) {
+            refreshTimeLink(mRealTimeDataMap);
+            isRefresh = false;
+        }
+    }
+
+    /**
+     * 刷新商品表数据
+     *
+     * @param realTimeDataList
+     */
+    private void refreshSymbolsTag(RealTimeDataList realTimeDataList) {
+        Log.i(TAG, "refreshSymbolsTag: 刷新商品数据");
         BeanSymbolTag beanSymbolTag;
         for (RealTimeDataList.BeanRealTime beanRealTime : realTimeDataList.getQuotes()) {
-
             for (int i = 0; i < mBeanSymbolTags.size(); i++) {
                 beanSymbolTag = mBeanSymbolTags.get(i);
                 if (beanSymbolTag.getSymbol().equals(beanRealTime.getSymbol())) {
@@ -255,16 +351,21 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
         }
     }
 
-    @Override
-    public void eventRealTimeChar(Map<String, List<RealTimeDataList.BeanRealTime>> beanRealTimes) {
-        Log.i(TAG, "eventRealTimeChar: 刷新实时数据");
+    /**
+     * 刷新分时图
+     *
+     * @param beanRealTimes
+     */
+    private void refreshTimeLink(Map<String, List<RealTimeDataList.BeanRealTime>> beanRealTimes) {
+        Log.i(TAG, "refreshTimeLink: 刷新分时图");
         mRealTimeDataMap = beanRealTimes;
         //精度存在才继续
         if (mAllSymbolsDigits == null) {
             return;
         }
         //判断是同一个symbol才处理
-        mCstContent.postInvalidate(beanRealTimes.get(mCurrentSymbol), isChange, mAllSymbolsDigits.get(mCurrentSymbol));
+        mCstContent.postInvalidate(beanRealTimes.containsKey(mCurrentSymbol) ? beanRealTimes.get(mCurrentSymbol) : null,
+                isChange, mAllSymbolsDigits.containsKey(mCurrentSymbol) ? mAllSymbolsDigits.get(mCurrentSymbol) : 0);
     }
 
     @Override
@@ -303,7 +404,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     }
 
     /**
-     * 接受历史数据
+     * 接收历史数据
      *
      * @param beanHistoryPrices
      */
@@ -311,7 +412,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     public void eventHistoryPrices(BeanHistoryPrices beanHistoryPrices) {
         Log.i(TAG, "eventHistoryPrices: 历史报价");
         mHistoryPricesMap.put(beanHistoryPrices.getSymbol() + "_" + beanHistoryPrices.getPeriod(), beanHistoryPrices);
-        if(mCurrentSymbol.equals(beanHistoryPrices.getSymbol())&&beanHistoryPrices.getPeriod()== DataUtil.selectPeriod(mPeriod)){
+        if (mCurrentSymbol.equals(beanHistoryPrices.getSymbol()) && beanHistoryPrices.getPeriod() == DataUtil.selectPeriod(mPeriod)) {
             mCklContent.postInvalidate(beanHistoryPrices);
         }
     }

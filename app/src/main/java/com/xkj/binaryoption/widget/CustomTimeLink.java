@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * Created by huangsc on 2017-04-25.
- * TODO:分时图 k线图
+ * TODO:分时图
  */
 
 public class CustomTimeLink extends View {
@@ -131,15 +131,11 @@ public class CustomTimeLink extends View {
         pathFill.moveTo(0, mLinkHeight);
         pathFill.lineTo(0, Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(0).getBid())), mHeightUnit)).intValue());
         for(int i=1;i<mData.size();i++){
-//            Log.i(TAG, "drawLink: ");
-//            Log.i(TAG, "drawLink: h"+Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(i + 1).getBid())), mHeightUnit)).intValue());
-//            Log.i(TAG, "drawLink: w"+mWidth * (i + 1) / mMaxDataSize);
             pathLink.lineTo(mLinkWidth * (i ) / mMaxDataSize, Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(i ).getBid())), mHeightUnit)).intValue());
-            //先这样，填充颜色后面做
             pathFill.lineTo(mLinkWidth * (i) / mMaxDataSize, Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(i ).getBid())), mHeightUnit)).intValue());
-//            pathFill.lineTo(mLinkWidth * (i + 1) / mMaxDataSize,mLinkHeight);
         }
-        pathFill.setLastPoint(mLinkWidth *(mData.size())/mMaxDataSize, mLinkHeight);
+//        pathFill.lineTo();
+        pathFill.lineTo(mLinkWidth *(mData.size())/mMaxDataSize, mLinkHeight);
         pathFill.close();
         canvas.drawPath(pathLink, mPaintLink);
         canvas.drawPath(pathFill, mPaintFill);
@@ -168,11 +164,13 @@ public class CustomTimeLink extends View {
     }
 
     public void postInvalidate(List<RealTimeDataList.BeanRealTime> mData,boolean isFirst,int digits){
-        if(mMax.equals("0")||!this.mData.get(0).getSymbol().equals(mData.get(0).getSymbol())) {
-            mMedian=String.valueOf(mData.get(0).getBid());
-            mMax = BigdecimalUtils.add(mMedian, BigdecimalUtils.movePointLeft("50", digits));
-            mMin = BigdecimalUtils.sub(mMedian, BigdecimalUtils.movePointLeft("50", digits));
-            mRange = BigdecimalUtils.sub(mMax, mMin);
+        if(mData!=null) {
+            if (this.mData==null || !this.mData.get(0).getSymbol().equals(mData.get(0).getSymbol())) {
+                mMedian = String.valueOf(mData.get(0).getBid());
+                mMax = BigdecimalUtils.add(mMedian, BigdecimalUtils.movePointLeft("50", digits));
+                mMin = BigdecimalUtils.sub(mMedian, BigdecimalUtils.movePointLeft("50", digits));
+                mRange = BigdecimalUtils.sub(mMax, mMin);
+            }
         }
         this.mData=mData;
         mDigits =digits;

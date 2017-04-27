@@ -19,7 +19,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,7 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
     /**
      * 判断是否需要刷新
      */
-    private boolean isRefresh=false;
+
     public OpenPresenterImpl(Context context,OpenContract.View mView) {
         mContext=context;
         this.mView=mView;
@@ -68,26 +67,7 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
     public void onGetRealTimeData(RealTimeDataList realTimeDataList) {
         Log.i("hsc", "onGetRealTimeData: ");
         mView.eventRealTimeData(realTimeDataList);
-        for(RealTimeDataList.BeanRealTime beanRealTime:realTimeDataList.getQuotes()){
-            //判断是是否存在，存在则判断是否大于80，不存在则添加
-            if (mRealTimeDataMap.containsKey(beanRealTime.getSymbol())){
-                if(mRealTimeDataMap.get(beanRealTime.getSymbol()).size()>80){
-                    mRealTimeDataMap.get(beanRealTime.getSymbol()).remove(0);
-                }
-                mRealTimeDataMap.get(beanRealTime.getSymbol()).add(beanRealTime);
-            }else{
-                LinkedList<RealTimeDataList.BeanRealTime> timeLinkedList=new LinkedList<>();
-                timeLinkedList.add(beanRealTime);
-                mRealTimeDataMap.put(beanRealTime.getSymbol(),timeLinkedList);
-            }
-            if(beanRealTime.getSymbol().equals(mCurrentSymbol)){
-                isRefresh=true;
-            }
-        }
-        if(mCurrentSymbol!=null&&isRefresh){
-            mView.eventRealTimeChar(mRealTimeDataMap);
-            isRefresh=false;
-        }
+
     }
 
     /**

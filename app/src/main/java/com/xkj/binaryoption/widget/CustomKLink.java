@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.bean.BeanHistoryPrices;
+import com.xkj.binaryoption.bean.RealTimeDataList;
 import com.xkj.binaryoption.constant.MyConstant;
 import com.xkj.binaryoption.utils.BigdecimalUtils;
 import com.xkj.binaryoption.utils.DensityUtil;
@@ -45,6 +46,7 @@ public class CustomKLink extends View {
     private String mMinPrice;
     private String mHeightRang = "0";
     private int begin = 20;
+    private RealTimeDataList.BeanRealTime mBeanRaRealTime;
 
     public CustomKLink(Context context) {
         this(context, null);
@@ -64,7 +66,7 @@ public class CustomKLink extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO Auto-generated method stub
         // super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.d("ee", "onMeasure-----------");
+        Log.d(TAG, "onMeasure-----------");
         setMeasuredDimension(mWidth, mHeight);
     }
 
@@ -109,6 +111,11 @@ public class CustomKLink extends View {
 
     public void postInvalidate(BeanHistoryPrices beanHistoryPrices) {
         mBeanHistoryPrices = beanHistoryPrices;
+        postInvalidate();
+    }
+    public void postInvalidate(BeanHistoryPrices beanHistoryPrices, RealTimeDataList.BeanRealTime beanRealTime) {
+        mBeanHistoryPrices = beanHistoryPrices;
+        mBeanRaRealTime=beanRealTime;
         postInvalidate();
     }
 
@@ -183,7 +190,6 @@ public class CustomKLink extends View {
                         } else {
 //                            path5.lineTo(mWidth,mHeight);
                             path5.lineTo(yBottom=Float.valueOf(mWidthUnit) / 2 + Float.valueOf(mWidthUnit) * (i-begin), yTop=Math.abs(Float.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, meanPrice), mHeightUnit))));
-                            Log.i(TAG, "drawRect: "+yBottom+"  "+yTop);
                         }
                 //画10线
                 meanPrice="0";
@@ -197,7 +203,6 @@ public class CustomKLink extends View {
                 } else {
 //                            path5.lineTo(mWidth,mHeight);
                     path10.lineTo(yBottom=Float.valueOf(mWidthUnit) / 2 + Float.valueOf(mWidthUnit) * (i-begin), yTop=Math.abs(Float.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, meanPrice), mHeightUnit))));
-                    Log.i(TAG, "drawRect: "+yBottom+"  "+yTop);
                 }
                 //画20线
                 meanPrice="0";
@@ -211,7 +216,6 @@ public class CustomKLink extends View {
                 } else {
 //                            path5.lineTo(mWidth,mHeight);
                     path20.lineTo(yBottom=Float.valueOf(mWidthUnit) / 2 + Float.valueOf(mWidthUnit) * (i-begin), yTop=Math.abs(Float.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, meanPrice), mHeightUnit))));
-                    Log.i(TAG, "drawRect: "+yBottom+"  "+yTop);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -225,7 +229,6 @@ public class CustomKLink extends View {
             startY = BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, BigdecimalUtils.add(split[0], split[1])), mHeightUnit);
             endY = BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, BigdecimalUtils.add(split[0], split[2])), mHeightUnit);
             canvas.drawLine(linkX = Float.valueOf(mWidthUnit) / 2 + Float.valueOf(mWidthUnit) * (i-begin), Float.valueOf(startY), linkX, Float.valueOf(endY), mTempPaint);
-            Log.i(TAG, "drawRect: " + linkX);
             //画开仓和关仓矩形
             if (Double.valueOf(split[3]) < 0) {
                 canvas.drawRect(left = Float.valueOf(mWidthUnit) * (i-begin) + Float.valueOf(mWidthUnit) / 6, yTop = Math.abs(Float.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, split[0]), mHeightUnit))),
