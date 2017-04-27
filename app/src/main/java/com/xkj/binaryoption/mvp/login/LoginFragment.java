@@ -24,7 +24,6 @@ import com.xkj.binaryoption.mvp.login.p.LoginPresenterCompl;
 import com.xkj.binaryoption.mvp.trade.TradeActivity;
 import com.xkj.binaryoption.utils.ACache;
 import com.xkj.binaryoption.utils.AesEncryptionUtil;
-import com.xkj.binaryoption.utils.CacheUtil;
 import com.xkj.binaryoption.utils.SSLSOCKET.SSLSocketChannel;
 import com.xkj.binaryoption.utils.SystemUtil;
 import com.xkj.binaryoption.utils.ThreadHelper;
@@ -130,8 +129,7 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
     public void onLoginResult(ResponseEvent loginEvent) {
         int code = loginEvent.getResult_code();
         if (code == 0) {
-            CacheUtil.saveuserInfo(mContext, mCetAccount.getText().toString(),
-                    AesEncryptionUtil.encrypt(mCetPassword.getText().toString()));
+
             ACache.get(mContext).put(MyConstant.user_name,mCetAccount.getText().toString());
             ACache.get(mContext).put(MyConstant.user_password,AesEncryptionUtil.encrypt(mCetPassword.getText().toString()));
         } else {

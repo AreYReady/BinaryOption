@@ -21,4 +21,9 @@ public class MyConstant {
 
     public static  String Chang_amount="amount";
     public static  String Chang_background="background";
+    /**
+     * 线图的空闲位置
+     */
+    public static  int LINK_FREE_SPACE_H=10;
+    public static  int LINK_FREE_SPACE_W=8;
 }

@@ -22,7 +22,7 @@ import java.util.List;
  * TODO:分时图 k线图
  */
 
-public class CustomStockChar extends View {
+public class CustomTimeLink extends View {
     private Paint mPaintLink;
     private Paint mPaintFill;
     private Paint mTextPaint;
@@ -45,23 +45,22 @@ public class CustomStockChar extends View {
     /**
      * 线图的主题宽高，留右 下 个留空间显示
      */
-    private int mCharWidth;
-    private int mCharHeight;
+    private int mLinkWidth;
+    private int mLinkHeight;
     /**
      * 是否重新计算
      */
     private boolean isAgain=true;
 
-
-    public CustomStockChar(Context context) {
+    public CustomTimeLink(Context context) {
         this(context,null);
     }
 
-    public CustomStockChar(Context context, AttributeSet attrs) {
+    public CustomTimeLink(Context context, AttributeSet attrs) {
         this(context, attrs,0);
     }
 
-    public CustomStockChar(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomTimeLink(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr);
     }
@@ -75,10 +74,10 @@ public class CustomStockChar extends View {
     public void setWidthHeight(int width, int height) {
         this.mHeight = height;
         this.mWidth = width;
-        mCharHeight=mHeight-mHeight/10;
-        mCharWidth=mWidth-mWidth/10;
-        mTextX=mCharWidth;
-        mTextY=mCharHeight/10;
+        mLinkHeight =mHeight-mHeight/10;
+        mLinkWidth =mWidth-mWidth/10;
+        mTextX= mLinkWidth;
+        mTextY= mLinkHeight /10;
 
     }
     /**
@@ -91,10 +90,10 @@ public class CustomStockChar extends View {
         mPaintLink =new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaintLink.setStyle(Paint.Style.STROKE);
         mPaintLink.setStrokeWidth(10);
-        mPaintLink.setColor(getResources().getColor(R.color.background_edittext_orange));
+        mPaintLink.setColor(getResources().getColor(R.color.background_button_orange_normal));
         mPaintFill =new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaintFill.setStyle(Paint.Style.FILL);
-        mPaintFill.setColor(getResources().getColor(R.color.background_button_green));
+        mPaintFill.setColor(getResources().getColor(R.color.background_edittext_orange_normal));
         mTextPaint=new Paint();
         mTextPaint.setTextSize(DensityUtil.sp2px(context,10));
         mTextPaint.setColor(getResources().getColor(R.color.text_color_white));
@@ -129,46 +128,46 @@ public class CustomStockChar extends View {
         pathLink=new Path();
         pathFill=new Path();
         pathLink.moveTo(0, Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(0).getBid())), mHeightUnit)).intValue());
-        pathFill.moveTo(0,mCharHeight);
+        pathFill.moveTo(0, mLinkHeight);
         pathFill.lineTo(0, Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(0).getBid())), mHeightUnit)).intValue());
         for(int i=1;i<mData.size();i++){
 //            Log.i(TAG, "drawLink: ");
 //            Log.i(TAG, "drawLink: h"+Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(i + 1).getBid())), mHeightUnit)).intValue());
 //            Log.i(TAG, "drawLink: w"+mWidth * (i + 1) / mMaxDataSize);
-            pathLink.lineTo(mCharWidth * (i ) / mMaxDataSize, Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(i ).getBid())), mHeightUnit)).intValue());
+            pathLink.lineTo(mLinkWidth * (i ) / mMaxDataSize, Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(i ).getBid())), mHeightUnit)).intValue());
             //先这样，填充颜色后面做
-            pathFill.lineTo(mCharWidth * (i) / mMaxDataSize, Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(i ).getBid())), mHeightUnit)).intValue());
-//            pathFill.lineTo(mCharWidth * (i + 1) / mMaxDataSize,mCharHeight);
+            pathFill.lineTo(mLinkWidth * (i) / mMaxDataSize, Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(i ).getBid())), mHeightUnit)).intValue());
+//            pathFill.lineTo(mLinkWidth * (i + 1) / mMaxDataSize,mLinkHeight);
         }
-        pathFill.setLastPoint(mCharWidth*(mData.size())/mMaxDataSize,mCharHeight);
+        pathFill.setLastPoint(mLinkWidth *(mData.size())/mMaxDataSize, mLinkHeight);
         pathFill.close();
         canvas.drawPath(pathLink, mPaintLink);
         canvas.drawPath(pathFill, mPaintFill);
     }
 
     private void decodeData() {
-            try {
-                mHeightUnit =BigdecimalUtils.div(String.valueOf(mCharHeight),mRange,10);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+        try {
+            mHeightUnit =BigdecimalUtils.div(String.valueOf(mLinkHeight),mRange,10);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < mData.size(); i++) {
+            if(mData.get(i).getBid()>Double.valueOf(mMax)){
+                mMax=String.valueOf(mData.get(i).getBid());
+                mMin=BigdecimalUtils.sub(mMedian,BigdecimalUtils.sub(mMax,mMedian));
+                mRange=BigdecimalUtils.sub(mMax,mMin);
+                break;
             }
-            for (int i = 0; i < mData.size(); i++) {
-                if(mData.get(i).getBid()>Double.valueOf(mMax)){
-                    mMax=String.valueOf(mData.get(i).getBid());
-                    mMin=BigdecimalUtils.sub(mMedian,BigdecimalUtils.sub(mMax,mMedian));
-                    mRange=BigdecimalUtils.sub(mMax,mMin);
-                    break;
-                }
-                if(mData.get(i).getBid()<Double.valueOf(mMin)){
-                    mMin=String.valueOf(mData.get(i).getBid());
-                    mMax=BigdecimalUtils.add(mMedian,BigdecimalUtils.sub(mMedian,mMin));
-                    mRange=BigdecimalUtils.sub(mMax,mMin);
-                    break;
-                }
+            if(mData.get(i).getBid()<Double.valueOf(mMin)){
+                mMin=String.valueOf(mData.get(i).getBid());
+                mMax=BigdecimalUtils.add(mMedian,BigdecimalUtils.sub(mMedian,mMin));
+                mRange=BigdecimalUtils.sub(mMax,mMin);
+                break;
             }
         }
+    }
 
-public void postInvalidate(List<RealTimeDataList.BeanRealTime> mData,boolean isFirst,int digits){
+    public void postInvalidate(List<RealTimeDataList.BeanRealTime> mData,boolean isFirst,int digits){
         if(mMax.equals("0")||!this.mData.get(0).getSymbol().equals(mData.get(0).getSymbol())) {
             mMedian=String.valueOf(mData.get(0).getBid());
             mMax = BigdecimalUtils.add(mMedian, BigdecimalUtils.movePointLeft("50", digits));
@@ -178,5 +177,5 @@ public void postInvalidate(List<RealTimeDataList.BeanRealTime> mData,boolean isF
         this.mData=mData;
         mDigits =digits;
         postInvalidate();
-}
+    }
 }

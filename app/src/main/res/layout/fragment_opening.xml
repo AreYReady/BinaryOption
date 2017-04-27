@@ -22,11 +22,16 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background_char"
         >
-        <com.xkj.binaryoption.widget.CustomStockChar
+        <com.xkj.binaryoption.widget.CustomTimeLink
             android:id="@+id/cst_content"
+            android:visibility="gone"
             android:layout_width="match_parent"
-            android:background="@color/background_char"
+            android:layout_height="match_parent"/>
+        <com.xkj.binaryoption.widget.CustomKLink
+            android:id="@+id/ckl_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </FrameLayout>
     </ScrollView>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,8 @@ import com.google.gson.Gson;
 import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.adapter.SymbolsTagAdapter;
 import com.xkj.binaryoption.base.BaseFragment;
+import com.xkj.binaryoption.bean.BeanHistoryPrices;
+import com.xkj.binaryoption.bean.BeanHistoryRequest;
 import com.xkj.binaryoption.bean.BeanOrderResponse;
 import com.xkj.binaryoption.bean.BeanSymbolConfig;
 import com.xkj.binaryoption.bean.BeanSymbolTag;
@@ -30,10 +33,12 @@ import com.xkj.binaryoption.constant.MyConstant;
 import com.xkj.binaryoption.mvp.trade.TradeActivity;
 import com.xkj.binaryoption.mvp.trade.opening.contract.OpenContract;
 import com.xkj.binaryoption.mvp.trade.opening.presenter.OpenPresenterImpl;
+import com.xkj.binaryoption.utils.DataUtil;
 import com.xkj.binaryoption.utils.ThreadHelper;
 import com.xkj.binaryoption.utils.ToashUtil;
+import com.xkj.binaryoption.widget.CustomKLink;
 import com.xkj.binaryoption.widget.CustomPopupWindow;
-import com.xkj.binaryoption.widget.CustomStockChar;
+import com.xkj.binaryoption.widget.CustomTimeLink;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -69,9 +74,11 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     @BindView(R.id.rv_symbols)
     RecyclerView mRvSymbols;
     @BindView(R.id.cst_content)
-    CustomStockChar mCstContent;
+    CustomTimeLink mCstContent;
     @BindView(R.id.scrollView)
     ScrollView mScrollView;
+    @BindView(R.id.ckl_content)
+    CustomKLink mCklContent;
     private List<BeanSymbolTag> mBeanSymbolTags;
     private List<BeanSymbolTag> mDupBeanSymbolTags;
     private String mAllSubSymbols;
@@ -80,10 +87,14 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     private final String AMOUNT_CHANG = "amountChang";
     private int mPosition = 0;
     CustomPopupWindow customPopupWindow;
-    private boolean isChange=false;
-    private String mCurrentSymbol="";
-    private  Map<String,Integer> mAllSymbolsDigits;
-    private Map<String,List<RealTimeDataList.BeanRealTime>> mRealTimeDataMap;
+    private boolean isChange = false;
+    private String mCurrentSymbol = "";
+    private String mPeriod = "m5";
+    private int bar_count = 60;
+    private Map<String, Integer> mAllSymbolsDigits;
+    private Map<String, List<RealTimeDataList.BeanRealTime>> mRealTimeDataMap;
+    private Map<String, BeanHistoryPrices> mHistoryPricesMap = new ArrayMap<>();
+
     /**
      * 记录实时分时图数据/秒
      */
@@ -100,24 +111,30 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
 
     @Override
     protected void initView() {
-        mRvSymbols.setAdapter(mMyRecycleAdapter = new SymbolsTagAdapter(mContext,mBeanSymbolTags));
+        mRvSymbols.setAdapter(mMyRecycleAdapter = new SymbolsTagAdapter(mContext, mBeanSymbolTags));
         mMyRecycleAdapter.setOnItemClickListener(new SymbolsTagAdapter.OnItemClickListener() {
 
             @Override
             public void onClick(int position, String symbols) {
-                mPosition=position;
+                mPosition = position;
                 setCurrentSymbol(mBeanSymbolTags.get(position).getSymbol());
                 eventRealTimeChar(mRealTimeDataMap);
+                if(mHistoryPricesMap.containsKey(symbols+"_"+DataUtil.selectPeriod(mPeriod))){
+                    mCklContent.postInvalidate(mHistoryPricesMap.get(symbols+"_"+DataUtil.selectPeriod(mPeriod)));
+                }else{
+                    mPresenter.sendHistoryPrices(new BeanHistoryRequest(symbols,bar_count,mPeriod));
+                }
             }
         });
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvSymbols.setLayoutManager(layoutManager);
-        mTlType.addTab(mTlType.newTab().setText("分时图"));
-        mTlType.addTab(mTlType.newTab().setText("5分钟"));
-        mTlType.addTab(mTlType.newTab().setText("15分钟"));
-        mTlType.addTab(mTlType.newTab().setText("60分钟"));
-        mTlType.addTab(mTlType.newTab().setText("日线"));
+        mTlType.addTab(mTlType.newTab().setText("分时图").setTag("fenshi"));
+        TabLayout.Tab tab;
+        mTlType.addTab(tab = mTlType.newTab().setText("5分钟").setTag("m5"));
+        mTlType.addTab(mTlType.newTab().setText("15分钟").setTag("m15"));
+        mTlType.addTab(mTlType.newTab().setText("60分钟").setTag("h1"));
+        mTlType.addTab(mTlType.newTab().setText("日线").setTag("d1"));
         LinearLayout linearLayout = (LinearLayout) mTlType.getChildAt(0);
         linearLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         linearLayout.setDividerDrawable(ContextCompat.getDrawable(mContext,
@@ -126,11 +143,30 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
             @Override
             public void onGlobalLayout() {
                 mScrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                mCstContent.setWidthHeight(mScrollView.getWidth(),mScrollView.getHeight());
-                Log.i(TAG, "initView: "+mScrollView.getWidth());
+                mCstContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
+                mCklContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
+                Log.i(TAG, "initView: " + mScrollView.getWidth());
+            }
+        });
+        setCurrentSymbol(mBeanSymbolTags.get(0).getSymbol());
+        mTlType.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mPeriod = tab.getTag().toString();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
             }
         });
+        tab.select();
+        mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, 60, mPeriod));
     }
 
     @Override
@@ -150,7 +186,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
             mDupBeanSymbolTags.add(new BeanSymbolTag(symbolsBean.getDesc(), symbolsBean.getSymbol(), "0.0", true));
             mPresenter.sendSubSymbol(symbolsBean.getSymbol());
         }
-        setCurrentSymbol(mBeanSymbolTags.get(0).getSymbol());
+
     }
 
     @Override
@@ -188,6 +224,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
 
     /**
      * 刷新实时数据
+     *
      * @param realTimeDataList
      */
     @Override
@@ -221,19 +258,19 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     @Override
     public void eventRealTimeChar(Map<String, List<RealTimeDataList.BeanRealTime>> beanRealTimes) {
         Log.i(TAG, "eventRealTimeChar: 刷新实时数据");
-        mRealTimeDataMap=beanRealTimes;
+        mRealTimeDataMap = beanRealTimes;
         //精度存在才继续
-        if(mAllSymbolsDigits==null){
+        if (mAllSymbolsDigits == null) {
             return;
         }
         //判断是同一个symbol才处理
-            mCstContent.postInvalidate(beanRealTimes.get(mCurrentSymbol), isChange,mAllSymbolsDigits.get(mCurrentSymbol));
-    }
-    @Override
-    public void eventAllSymbolsData(Map<String, Integer> mAllSymbolsDigits) {
-        this.mAllSymbolsDigits =mAllSymbolsDigits;
+        mCstContent.postInvalidate(beanRealTimes.get(mCurrentSymbol), isChange, mAllSymbolsDigits.get(mCurrentSymbol));
     }
 
+    @Override
+    public void eventAllSymbolsData(Map<String, Integer> mAllSymbolsDigits) {
+        this.mAllSymbolsDigits = mAllSymbolsDigits;
+    }
 
 
     /**
@@ -259,9 +296,23 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
         mPresenter.onDestroy();
         EventBus.getDefault().unregister(this);
     }
-    private void setCurrentSymbol(String currentSymbol){
-        mCurrentSymbol=currentSymbol;
+
+    private void setCurrentSymbol(String currentSymbol) {
+        mCurrentSymbol = currentSymbol;
         mPresenter.setCurrentSymbol(mCurrentSymbol);
     }
 
+    /**
+     * 接受历史数据
+     *
+     * @param beanHistoryPrices
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void eventHistoryPrices(BeanHistoryPrices beanHistoryPrices) {
+        Log.i(TAG, "eventHistoryPrices: 历史报价");
+        mHistoryPricesMap.put(beanHistoryPrices.getSymbol() + "_" + beanHistoryPrices.getPeriod(), beanHistoryPrices);
+        if(mCurrentSymbol.equals(beanHistoryPrices.getSymbol())&&beanHistoryPrices.getPeriod()== DataUtil.selectPeriod(mPeriod)){
+            mCklContent.postInvalidate(beanHistoryPrices);
+        }
+    }
 }

@@ -16,5 +16,11 @@
     <color name="link_gray">#3e3e3e</color>
     <color name="text_color_white">@android:color/white</color>
     <color name="trans_black">#77000000</color>
-
+    <color name ="text_color_price_fall">#21eab4</color>
+    <color name ="text_color_price_rise">#df5141</color>
+    <color name="text_color_primary_disabled_dark">#ff878787</color>
+    <color name="text_color_primary_dark_with_opacity">#4dededed</color>
+    <color name="link_m5">#ff783c</color>
+    <color name="link_m10">#49a5ff</color>
+    <color name="link_m20">#ffbf43</color>
 </resources>

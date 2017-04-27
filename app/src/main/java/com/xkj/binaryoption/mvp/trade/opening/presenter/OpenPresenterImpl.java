@@ -7,6 +7,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.xkj.binaryoption.bean.BeanHistoryRequest;
 import com.xkj.binaryoption.bean.BeanOrderRequest;
 import com.xkj.binaryoption.bean.EventBusAllSymbol;
 import com.xkj.binaryoption.bean.RealTimeDataList;
@@ -130,5 +131,11 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
     public void setCurrentSymbol(String currentSymbol){
         mCurrentSymbol=currentSymbol;
     }
+
+    @Override
+    public void sendHistoryPrices(BeanHistoryRequest beanHistoryRequest) {
+        sendMessageToServer(new Gson().toJson(beanHistoryRequest));
+    }
+
 
 }

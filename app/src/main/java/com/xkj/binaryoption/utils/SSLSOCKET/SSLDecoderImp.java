@@ -4,11 +4,11 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.xkj.binaryoption.bean.BeanHistoryOrder;
+import com.xkj.binaryoption.bean.BeanHistoryPrices;
 import com.xkj.binaryoption.bean.BeanOrderResponse;
 import com.xkj.binaryoption.bean.BeanServerTime;
 import com.xkj.binaryoption.bean.BeanSymbolConfig;
 import com.xkj.binaryoption.bean.BeanUserInfo;
-import com.xkj.binaryoption.bean.DataEvent;
 import com.xkj.binaryoption.bean.EventBusAllSymbol;
 import com.xkj.binaryoption.bean.RealTimeDataList;
 import com.xkj.binaryoption.bean.ResponseEvent;
@@ -112,7 +112,9 @@ public class SSLDecoderImp implements Decoder<String> {
                     break;
                 case MessageType.TYPE_BINARY_HISTORY_LIST://发送历史数据，画图
                     Log.i(TAG, "handleResult:发送历史数据，画图=  "+resultMessage);
-                    EventBus.getDefault().post(new DataEvent(resultMessage, MessageType.TYPE_BINARY_HISTORY_LIST));
+//                    EventBus.getDefault().post(new DataEvent(resultMessage, MessageType.TYPE_BINARY_HISTORY_LIST));
+                    BeanHistoryPrices beanHistoryPrices=new Gson().fromJson(resultMessage,BeanHistoryPrices.class);
+                    EventBus.getDefault().post(beanHistoryPrices);
                     Log.i("123", "handleResult: historyffffff");
                     break;
                 case MessageType.TYPE_BINARY_ORDER_RESPONSE://下订单是否成功

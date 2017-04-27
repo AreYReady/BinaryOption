@@ -11,7 +11,7 @@ public class BeanHistoryRequest implements Serializable {
     /**
      * msg_type : 1100
      * symbol : EURUSD
-     * bar_count : 20
+     * bar_count : 60
      * period : m5
      */
 
@@ -22,6 +22,12 @@ public class BeanHistoryRequest implements Serializable {
      * 暂时只用m1，后期再扩展
      */
     private String period = "m1";
+
+    public BeanHistoryRequest(String symbol, int bar_count, String period) {
+        this.symbol = symbol;
+        this.bar_count = bar_count;
+        this.period = period;
+    }
 
     public BeanHistoryRequest(String symbol, int bar_count) {
         this.symbol = symbol;

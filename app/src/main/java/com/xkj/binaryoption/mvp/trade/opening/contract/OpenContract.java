@@ -1,5 +1,6 @@
 package com.xkj.binaryoption.mvp.trade.opening.contract;
 
+import com.xkj.binaryoption.bean.BeanHistoryRequest;
 import com.xkj.binaryoption.bean.RealTimeDataList;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public interface Presenter{
      * @param currentSymbol
      */
     void setCurrentSymbol(String currentSymbol);
+    void sendHistoryPrices(BeanHistoryRequest beanHistoryRequest);
+
 
 }
 
