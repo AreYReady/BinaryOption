@@ -12,8 +12,8 @@ import com.xkj.binaryoption.bean.BeanOrderRequest;
 import com.xkj.binaryoption.bean.EventBusAllSymbol;
 import com.xkj.binaryoption.bean.RealTimeDataList;
 import com.xkj.binaryoption.constant.MessageType;
-import com.xkj.binaryoption.message.MessageHeart;
 import com.xkj.binaryoption.mvp.trade.opening.contract.OpenContract;
+import com.xkj.binaryoption.utils.SystemUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -32,6 +32,7 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
     private Handler mHandler;
     private Map<String,List<RealTimeDataList.BeanRealTime>> mRealTimeDataMap=new ArrayMap<>();
     private String mCurrentSymbol;
+    private String TAG= SystemUtil.getTAG(this);
     /**
      * 判断是否需要刷新
      */
@@ -85,12 +86,10 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
     }
     @Subscribe(sticky = true)
     public void getHandler(Handler handler){
+        Log.i(TAG, "getHandler: ");
         mHandler=handler;
     }
-    @Subscribe
-    public void getHeart(MessageHeart messageHeart){
-        sendMessageToServer("{\"msg_type\":2}");
-    }
+
     @Subscribe
     public void eventOrderRequest(BeanOrderRequest beanOrderRequest){
         sendMessageToServer( new Gson().toJson(beanOrderRequest));

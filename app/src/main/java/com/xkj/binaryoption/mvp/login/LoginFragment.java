@@ -129,7 +129,7 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
     public void onLoginResult(ResponseEvent loginEvent) {
         int code = loginEvent.getResult_code();
         if (code == 0) {
-
+            Log.i(TAG, "onLoginResult: 记录账号密码");
             ACache.get(mContext).put(MyConstant.user_name,mCetAccount.getText().toString());
             ACache.get(mContext).put(MyConstant.user_password,AesEncryptionUtil.encrypt(mCetPassword.getText().toString()));
         } else {

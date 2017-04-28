@@ -5,7 +5,7 @@ package com.xkj.binaryoption.constant;
  * TODO:
  */
 
-public class MyConstant {
+public  class MyConstant {
     /**
      * 按钮时间，买涨买跌
      */
@@ -24,6 +24,6 @@ public class MyConstant {
     /**
      * 线图的空闲位置
      */
-    public static  int LINK_FREE_SPACE_H=10;
-    public static  int LINK_FREE_SPACE_W=8;
+    public static  int LINK_FREE_SPACE_H=15;
+    public static  int LINK_FREE_SPACE_W=7;
 }

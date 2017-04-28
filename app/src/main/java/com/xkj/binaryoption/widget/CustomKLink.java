@@ -13,6 +13,7 @@ import com.xkj.binaryoption.bean.BeanHistoryPrices;
 import com.xkj.binaryoption.bean.RealTimeDataList;
 import com.xkj.binaryoption.constant.MyConstant;
 import com.xkj.binaryoption.utils.BigdecimalUtils;
+import com.xkj.binaryoption.utils.DateUtils;
 import com.xkj.binaryoption.utils.DensityUtil;
 import com.xkj.binaryoption.utils.SystemUtil;
 
@@ -30,10 +31,12 @@ public class CustomKLink extends View {
     private Context mContext;
     private Paint mRisePaint;
     private Paint mGarkPaint;
-    private Paint mSilverPaint;
     private Paint mDashedPaint;
     private Paint mTempPaint;
+    private Paint mTextPaint;
+    private Paint mTimeTextPaint;
     private Paint mMeanPaint;
+    private Paint mRealTimePricesPaint;
     private int mWidth = 0;
     private int mHeight = 0;
     private int mLinkWidth = 0;
@@ -46,7 +49,8 @@ public class CustomKLink extends View {
     private String mMinPrice;
     private String mHeightRang = "0";
     private int begin = 20;
-    private RealTimeDataList.BeanRealTime mBeanRaRealTime;
+    private RealTimeDataList.BeanRealTime mBeanRaRealTimePrice;
+    private RealTimeDataList.BeanRealTime mOldBeanRaRealTimePrice;
 
     public CustomKLink(Context context) {
         this(context, null);
@@ -91,10 +95,6 @@ public class CustomKLink extends View {
         mRisePaint.setStyle(Paint.Style.FILL);
         mRisePaint.setColor(getResources().getColor(R.color.text_color_price_rise));
         mRisePaint.setStrokeWidth(3);
-        mSilverPaint = new Paint();
-        mSilverPaint.setStyle(Paint.Style.STROKE);
-        mSilverPaint.setColor(getResources().getColor(R.color.text_color_primary_disabled_dark));
-        mSilverPaint.setStrokeWidth(3);
         mGarkPaint = new Paint();
         mGarkPaint.setColor(getResources().getColor(R.color.text_color_primary_dark_with_opacity));
         mGarkPaint.setStrokeWidth(3);
@@ -103,10 +103,21 @@ public class CustomKLink extends View {
         mDashedPaint = new Paint();
         mDashedPaint.setStyle(Paint.Style.FILL);
         mDashedPaint.setStrokeWidth(3);
-
         mMeanPaint = new Paint();
         mMeanPaint.setStrokeWidth(3);
         mMeanPaint.setStyle(Paint.Style.STROKE);
+        mTextPaint=new Paint();
+        mTextPaint.setTextSize(DensityUtil.sp2px(mContext,11));
+        mTextPaint.setColor(getResources().getColor(R.color.text_color_white));
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mTimeTextPaint=new Paint();
+        mTimeTextPaint.setTextSize(DensityUtil.sp2px(mContext,11));
+        mTimeTextPaint.setColor(getResources().getColor(R.color.text_color_white));
+        mTimeTextPaint.setTextAlign(Paint.Align.LEFT);
+        mRealTimePricesPaint =new Paint();
+        mRealTimePricesPaint.setTextSize(5);
+        mRealTimePricesPaint.setStyle(Paint.Style.FILL);
+
     }
 
     public void postInvalidate(BeanHistoryPrices beanHistoryPrices) {
@@ -115,7 +126,7 @@ public class CustomKLink extends View {
     }
     public void postInvalidate(BeanHistoryPrices beanHistoryPrices, RealTimeDataList.BeanRealTime beanRealTime) {
         mBeanHistoryPrices = beanHistoryPrices;
-        mBeanRaRealTime=beanRealTime;
+        mBeanRaRealTimePrice =beanRealTime;
         postInvalidate();
     }
 
@@ -126,8 +137,56 @@ public class CustomKLink extends View {
             decodeData();
             drawRect(canvas);
             drawText(canvas);
+            if(mBeanRaRealTimePrice !=null&& mBeanRaRealTimePrice.getSymbol().equals(mBeanHistoryPrices.getSymbol()))
+            drawRealTime(canvas);
+
         }
 
+    }
+
+    private void drawRealTime(Canvas canvas) {
+        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
+        float top = fontMetrics.top;//为基线到字体上边框的距离,即上图中的top
+        float bottom = fontMetrics.bottom;//为基线到字体下边框的距离,即上图中的bottom
+        Double lastOpenPrice = Double.valueOf(mBeanHistoryPrices.getItems().get(mBeanHistoryPrices.getCount() - 1).getO().split("\\|")[0]);
+       if(mOldBeanRaRealTimePrice==null||
+               !mOldBeanRaRealTimePrice.getSymbol().equals(mBeanHistoryPrices.getSymbol())||
+               mOldBeanRaRealTimePrice.getBid()==mBeanRaRealTimePrice.getBid()){
+           mRealTimePricesPaint.setColor(getResources().getColor(R.color.text_color_primary_disabled_dark));
+       }
+        else if(mBeanRaRealTimePrice.getBid()>mOldBeanRaRealTimePrice.getBid()){
+            mRealTimePricesPaint.setColor(getResources().getColor(R.color.text_color_price_rise));
+        }else if(mBeanRaRealTimePrice.getBid()<lastOpenPrice){
+            mRealTimePricesPaint.setColor(getResources().getColor(R.color.text_color_price_fall));
+        }
+        int lastY=Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice,BigdecimalUtils.movePointRight(String.valueOf(mBeanRaRealTimePrice.getBid()),mBeanHistoryPrices.getDigits())), mHeightUnit)).intValue();
+
+        canvas.drawLine(0,
+                lastY,
+                mLinkWidth,
+                lastY,
+                mRealTimePricesPaint);
+
+        canvas.drawRoundRect(mLinkWidth,
+                lastY+top-DensityUtil.dip2px(mContext,5),
+                mWidth,
+                lastY+bottom+DensityUtil.dip2px(mContext,5),
+                (float)DensityUtil.dip2px(mContext,5),(float) DensityUtil.dip2px(mContext,5),
+                mRealTimePricesPaint
+        );
+        canvas.drawRoundRect(mLinkWidth,
+                lastY+top-DensityUtil.dip2px(mContext,5),
+                mWidth,
+                lastY+bottom+DensityUtil.dip2px(mContext,5),
+                (float)DensityUtil.dip2px(mContext,5),(float) DensityUtil.dip2px(mContext,5),
+                mRealTimePricesPaint
+        );
+        canvas.drawText(
+                String.valueOf(mBeanRaRealTimePrice.getBid()),
+                mLinkWidth+(mWidth-mLinkWidth)/2,
+                lastY,
+                mTextPaint);
+        mOldBeanRaRealTimePrice=mBeanRaRealTimePrice;
     }
 
     /**
@@ -135,11 +194,37 @@ public class CustomKLink extends View {
      * @param canvas
      */
     private void drawText(Canvas canvas) {
-            if(Integer.valueOf(mHeightRang)<50){
-                
-            }else{
-
+        int sub=0;
+        int length = mHeightRang.length()   ;
+        int first = Integer.valueOf( mHeightRang.subSequence(0, 1).toString());
+        if(length==1){
+            sub=1;
+        } else if(first<2){
+            sub=2*(int)Math.pow((double)10,(double)length-2);
+        }else if(first<5){
+            sub=5*(int)Math.pow((double)10,(double)length-2);
+        }else  if(first<10){
+            sub=(int)Math.pow((double)10,(double)length-1);
+        }
+        int residue=Integer.valueOf(mMaxPrice)%sub;
+        String mPriceTag;
+        for(int i=0;i<11;i++) {
+            //                     (127887-7)-(1)*i
+            mPriceTag=BigdecimalUtils.movePointLeft(BigdecimalUtils.sub(BigdecimalUtils.sub(mMaxPrice,String.valueOf(residue)), String.valueOf(sub*i)),mBeanHistoryPrices.getDigits());
+            if( Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice,BigdecimalUtils.movePointRight(mPriceTag,mBeanHistoryPrices.getDigits())), mHeightUnit)).intValue()>mLinkHeight){
+                break;
             }
+            canvas.drawText(
+                    mPriceTag,
+                    mLinkWidth+(mWidth-mLinkWidth)/2,
+                    Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice,BigdecimalUtils.movePointRight(mPriceTag,mBeanHistoryPrices.getDigits())), mHeightUnit)).intValue(),
+                    mTextPaint);
+
+//            Log.i(TAG, "drawText: max "+mMaxPrice+"  mPriceTag "+mPriceTag+"    y=="+Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice,BigdecimalUtils.movePointRight(mPriceTag,mBeanHistoryPrices.getDigits())), mHeightUnit)).intValue());
+        }
+        for(int i=begin-1;i<mBeanHistoryPrices.getCount();i=i+8){
+            canvas.drawText(DateUtils.getShowTimeNoTimeZone(((long)mBeanHistoryPrices.getItems().get(i).getT()+mBeanHistoryPrices.getItems().get(0).getT())*1000,"MM-dd HH:mm"),(i-begin+1)*Float.valueOf(mWidthUnit),mHeight,mTimeTextPaint);
+        }
     }
 
     private void drawRect(Canvas canvas) {

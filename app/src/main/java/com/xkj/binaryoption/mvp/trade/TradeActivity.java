@@ -18,6 +18,8 @@ import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.mvp.trade.opening.OpenFragment;
 import com.xkj.binaryoption.mvp.trade.pending.PendFragment;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +61,7 @@ public class TradeActivity extends BaseActivity {
 
     @Override
     public void initRegister() {
-//        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override

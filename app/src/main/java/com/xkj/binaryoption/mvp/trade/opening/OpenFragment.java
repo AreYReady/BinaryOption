@@ -34,6 +34,7 @@ import com.xkj.binaryoption.mvp.trade.TradeActivity;
 import com.xkj.binaryoption.mvp.trade.opening.contract.OpenContract;
 import com.xkj.binaryoption.mvp.trade.opening.presenter.OpenPresenterImpl;
 import com.xkj.binaryoption.utils.DataUtil;
+import com.xkj.binaryoption.utils.DateUtils;
 import com.xkj.binaryoption.utils.ThreadHelper;
 import com.xkj.binaryoption.utils.ToashUtil;
 import com.xkj.binaryoption.widget.CustomKLink;
@@ -119,11 +120,10 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
             public void onClick(int position, String symbols) {
                 mPosition = position;
                 setCurrentSymbol(mBeanSymbolTags.get(position).getSymbol());
-                refreshTimeLink(mRealTimeDataMap);
-                if (mHistoryPricesMap.containsKey(symbols + "_" + DataUtil.selectPeriod(mPeriod))) {
-                    mCklContent.postInvalidate(mHistoryPricesMap.get(symbols + "_" + DataUtil.selectPeriod(mPeriod)));
-                } else {
-                    mPresenter.sendHistoryPrices(new BeanHistoryRequest(symbols, bar_count, mPeriod));
+                if(mPeriod.equals("fenshi")) {
+                    refreshTimeLink(mRealTimeDataMap);
+                }else {
+                    sendHistoryPrices();
                 }
             }
         });
@@ -180,7 +180,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
             }
         });
         tab.select();
-        mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, 60, mPeriod));
+        sendHistoryPrices();
     }
 
     @Override
@@ -211,6 +211,13 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     private void sendHistoryPrices() {
         if (mHistoryPricesMap.containsKey(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod))) {
             mCklContent.postInvalidate(mHistoryPricesMap.get(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod)));
+        } else {
+            mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, bar_count, mPeriod));
+        }
+    }
+    private void sendHistoryPrices(RealTimeDataList.BeanRealTime beanRealTime){
+        if (mHistoryPricesMap.containsKey(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod))) {
+            mCklContent.postInvalidate(mHistoryPricesMap.get(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod)),beanRealTime);
         } else {
             mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, bar_count, mPeriod));
         }
@@ -272,6 +279,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
         for (RealTimeDataList.BeanRealTime beanRealTime : realTimeDataList.getQuotes()) {
             if (mHistoryPricesMap.containsKey(symbolm5 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("m5")))) {
                 //娶最后的时间进行计算，如果还没超过当前时间点，那么时间有效，计算最后一个时间，如果时间超过，删除第一个时间点，增加一个新的时间点
+
             }
             if (mHistoryPricesMap.containsKey(symbolm15 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("m15")))) {
 
@@ -282,12 +290,9 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
             if (mHistoryPricesMap.containsKey(symbolmd1 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("d1")))) {
 
             }
-            if (beanRealTime.getSymbol().equals(mCurrentSymbol)) {
-                //是当前商品，刷新k线图
-                if (mHistoryPricesMap.containsKey(mCurrentSymbol.concat("_" + DataUtil.selectPeriod(mPeriod))))
-                    mCklContent.postInvalidate(mHistoryPricesMap.get(mCurrentSymbol.concat("_" + DataUtil.selectPeriod(mPeriod))), beanRealTime);
-                else
-                    mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, bar_count, mPeriod));
+            if (!mPeriod.equals("fenshi")&&beanRealTime.getSymbol().equals(mCurrentSymbol)) {
+//                是当前商品，刷新k线图
+                 sendHistoryPrices(beanRealTime);
             }
         }
     }
@@ -412,6 +417,16 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     public void eventHistoryPrices(BeanHistoryPrices beanHistoryPrices) {
         Log.i(TAG, "eventHistoryPrices: 历史报价");
         mHistoryPricesMap.put(beanHistoryPrices.getSymbol() + "_" + beanHistoryPrices.getPeriod(), beanHistoryPrices);
+        int beginTime=0;
+         BeanHistoryPrices.ItemsBean itemsBean;
+        for(int i=0;i<mHistoryPricesMap.size();i++){
+            if(i!=0){
+                beanHistoryPrices.getItems().get(0).setTimeString(DateUtils.getShowTimeNoTimeZone(beginTime+beanHistoryPrices.getItems().get(i).getT(),"MM-dd hh:mm"));
+            }else if(i==0){
+                beginTime=beanHistoryPrices.getItems().get(0).getT();
+                beanHistoryPrices.getItems().get(0).setTimeString(DateUtils.getShowTimeNoTimeZone(beginTime,"MM-dd hh:mm"));
+            }
+        }
         if (mCurrentSymbol.equals(beanHistoryPrices.getSymbol()) && beanHistoryPrices.getPeriod() == DataUtil.selectPeriod(mPeriod)) {
             mCklContent.postInvalidate(beanHistoryPrices);
         }

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.xkj.binaryoption.message.MessageDisconnect;
 import com.xkj.binaryoption.utils.SSLSOCKET.SSLSocketChannel;
+import com.xkj.binaryoption.utils.SystemUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -17,6 +18,7 @@ import java.io.IOException;
  * 读取服务器响应
  */
 public class HandlerWrite extends Handler {
+    private String TAG= SystemUtil.getTAG(this);
     private SSLSocketChannel<String> mSSLSocketChannel;
 
     public HandlerWrite(Looper looper, SSLSocketChannel<String> SSLSocketChannel) {
@@ -36,7 +38,7 @@ public class HandlerWrite extends Handler {
         try {
             while (flag&&mSSLSocketChannel!=null){
                 response = mSSLSocketChannel.receive();
-                Log.i("123", "doLogin: Response received: " + response);
+                Log.i(TAG, "doLogin: Response received: " + response);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,9 +51,9 @@ public class HandlerWrite extends Handler {
                 //如果锻炼，重新发送
                 EventBus.getDefault().post(new MessageDisconnect());
                 flag = false;
-                Log.i("123", "doLogin: Response received: " + response);
+                Log.i(TAG, "doLogin: Response received: " + response);
             }
         }
-        Log.i("123", "doLogin: Response received: " + response);
+        Log.i(TAG, "doLogin: Response received: " + response);
     }
 }

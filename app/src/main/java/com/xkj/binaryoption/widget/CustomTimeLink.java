@@ -11,11 +11,14 @@ import android.view.View;
 
 import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.bean.RealTimeDataList;
+import com.xkj.binaryoption.constant.MyConstant;
 import com.xkj.binaryoption.utils.BigdecimalUtils;
 import com.xkj.binaryoption.utils.DensityUtil;
 import com.xkj.binaryoption.utils.SystemUtil;
 
 import java.util.List;
+
+import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by huangsc on 2017-04-25.
@@ -40,8 +43,8 @@ public class CustomTimeLink extends View {
     private String TAG= SystemUtil.getTAG(this);
     private Path pathLink;
     private Path pathFill;
-    private int mTextX=0;
-    private int mTextY=0;
+    private Context mContext;
+    private Paint mRealTimePaint;
     /**
      * 线图的主题宽高，留右 下 个留空间显示
      */
@@ -62,6 +65,7 @@ public class CustomTimeLink extends View {
 
     public CustomTimeLink(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext=context;
         init(context, attrs, defStyleAttr);
     }
     @Override
@@ -74,11 +78,8 @@ public class CustomTimeLink extends View {
     public void setWidthHeight(int width, int height) {
         this.mHeight = height;
         this.mWidth = width;
-        mLinkHeight =mHeight-mHeight/10;
-        mLinkWidth =mWidth-mWidth/10;
-        mTextX= mLinkWidth;
-        mTextY= mLinkHeight /10;
-
+        mLinkHeight =mHeight-mHeight/ MyConstant.LINK_FREE_SPACE_H;
+        mLinkWidth =mWidth-mWidth/MyConstant.LINK_FREE_SPACE_W;
     }
     /**
      * 初始化
@@ -89,7 +90,7 @@ public class CustomTimeLink extends View {
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         mPaintLink =new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaintLink.setStyle(Paint.Style.STROKE);
-        mPaintLink.setStrokeWidth(10);
+        mPaintLink.setStrokeWidth(DensityUtil.dip2px(context,2));
         mPaintLink.setColor(getResources().getColor(R.color.background_button_orange_normal));
         mPaintFill =new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaintFill.setStyle(Paint.Style.FILL);
@@ -97,6 +98,11 @@ public class CustomTimeLink extends View {
         mTextPaint=new Paint();
         mTextPaint.setTextSize(DensityUtil.sp2px(context,10));
         mTextPaint.setColor(getResources().getColor(R.color.text_color_white));
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mRealTimePaint = new Paint();
+        mRealTimePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mRealTimePaint.setColor(getResources().getColor(R.color.text_color_price_fall));
+        mRealTimePaint.setStrokeWidth(3);
     }
 
     @Override
@@ -106,18 +112,77 @@ public class CustomTimeLink extends View {
             decodeData();
             drawLink(canvas);
             drawText(canvas);
+            drawRealPrice(canvas);
         }
     }
 
-    private void drawText(Canvas canvas) {
-
-        for(int i=1;i<11;i++) {
-            try {
-                canvas.drawText("-"+BigdecimalUtils.sub(mMax,BigdecimalUtils.mul(BigdecimalUtils.div(mRange,"10",mDigits),""+i)), mTextX,mTextY*i,mTextPaint);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+    private void drawRealPrice(Canvas canvas) {
+        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
+        float top = fontMetrics.top;//为基线到字体上边框的距离,即上图中的top
+        float bottom = fontMetrics.bottom;//为基线到字体下边框的距离,即上图中的bottom
+        if(mData.size()==1||mData.get(mData.size()-1).getBid()==mData.get(mData.size()-2).getBid()) {
+            mRealTimePaint.setColor(getResources().getColor(R.color.text_color_primary_disabled_dark));
         }
+        else if(mData.get(mData.size()-1).getBid()>mData.get(mData.size()-2).getBid()) {
+            mRealTimePaint.setColor(getResources().getColor(R.color.text_color_price_rise));
+        }
+        else if(mData.get(mData.size()-1).getBid()<mData.get(mData.size()-2).getBid()) {
+            mRealTimePaint.setColor(getResources().getColor(R.color.text_color_price_fall));
+        }
+        int lastY=Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax, String.valueOf(mData.get(mData.size()-1).getBid())), mHeightUnit)).intValue();
+            canvas.drawLine(0,
+                    lastY,
+                    mLinkWidth,
+                    lastY,
+                    mRealTimePaint);
+
+            canvas.drawRoundRect(mLinkWidth,
+                    lastY+top-DensityUtil.dip2px(mContext,5),
+                    mWidth,
+                    lastY+bottom+DensityUtil.dip2px(mContext,5),
+                    (float)DensityUtil.dip2px(mContext,5),(float) DensityUtil.dip2px(mContext,5),
+                    mRealTimePaint
+                    );
+            canvas.drawRoundRect(mLinkWidth,
+                    lastY+top-DensityUtil.dip2px(mContext,5),
+                mWidth,
+                    lastY+bottom+DensityUtil.dip2px(mContext,5),
+                (float)DensityUtil.dip2px(mContext,5),(float) DensityUtil.dip2px(mContext,5),
+                    mRealTimePaint
+        );
+        canvas.drawText(String.valueOf(mData.get(mData.size()-1).getBid())
+                , mLinkWidth+(mWidth-mLinkWidth)/2,
+                lastY,
+                mTextPaint);
+    }
+
+    String mPriceTag;
+    private void drawText(Canvas canvas) {
+        int sub=0;
+        int length = BigdecimalUtils.movePointRight(mRange,mDigits).length()    ;
+        int first = Integer.valueOf( mRange.subSequence(0, 1).toString());
+        if(length==1){
+            sub=1;
+        } else if(first<2){
+            sub=2*(int)Math.pow((double)10,(double)length-2);
+        }else if(first<5){
+            sub=5*(int)Math.pow((double)10,(double)length-2);
+        }else  if(first<10){
+            sub=(int)Math.pow((double)10,(double)length-1);
+        }
+        int residue=Integer.valueOf(BigdecimalUtils.movePointRight(mMax,mDigits))%sub;
+
+        for(int i=0;i<11;i++) {
+
+            //                      (1278.87-0.07)-(0.1)*i
+                canvas.drawText(
+                        mPriceTag=BigdecimalUtils.movePointLeft(BigdecimalUtils.sub(BigdecimalUtils.sub(BigdecimalUtils.movePointRight(mMax,mDigits),String.valueOf(residue)), String.valueOf(sub*i)),mDigits),
+                        mLinkWidth+(mWidth-mLinkWidth)/2,
+                        Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax,mPriceTag), mHeightUnit)).intValue(),
+                        mTextPaint);
+//            Log.i(TAG, "drawText: max "+mMax+"  mPriceTag "+mPriceTag+"    y=="+Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMax,mPriceTag), mHeightUnit)).intValue());
+        }
+
     }
 
     /**
@@ -152,6 +217,7 @@ public class CustomTimeLink extends View {
                 mMax=String.valueOf(mData.get(i).getBid());
                 mMin=BigdecimalUtils.sub(mMedian,BigdecimalUtils.sub(mMax,mMedian));
                 mRange=BigdecimalUtils.sub(mMax,mMin);
+                //增加最大区间
                 break;
             }
             if(mData.get(i).getBid()<Double.valueOf(mMin)){

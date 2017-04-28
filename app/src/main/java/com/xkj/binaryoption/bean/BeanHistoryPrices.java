@@ -93,6 +93,7 @@ public class BeanHistoryPrices {
         private String o;
         private int t;
         private int v;
+        private String timeString;//人为添加数据，拿到数据先转换方便使用
 
         public String getO() {
             return o;
@@ -100,6 +101,14 @@ public class BeanHistoryPrices {
 
         public void setO(String o) {
             this.o = o;
+        }
+
+        public String getTimeString() {
+            return timeString;
+        }
+
+        public void setTimeString(String timeString) {
+            this.timeString = timeString;
         }
 
         public int getT() {

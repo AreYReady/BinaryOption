@@ -1,23 +1,18 @@
 package com.xkj.binaryoption.utils;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.text.format.Time;
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * @author xjunda
- * @date 2016-07-16
+ * Created by huangsc on 2017-04-28.
+ * TODO:
  */
-public class TimeUtils {
+
+public class DateUtils {
     /**
      * @author xjunda
      * Created at 2016-07-16 10:46
@@ -113,6 +108,10 @@ public class TimeUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(new Date(time));
     }
+    public static String getShowTimeNoTimeZone(long time,String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(new Date(time));
+    }
 
     /**
      * 获取订单开始时间
@@ -179,32 +178,6 @@ public class TimeUtils {
             builder.append('0');
         }
         builder.append(string);
-    }
-
-    public static final int SERVICER_TIME = 1;
-
-    /**
-     * 获取服务器时间
-     */
-    public static void getServiceTime(final Context context, final String url, final Handler handler) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL urlTime = new URL(url);//取得资源对象
-                    URLConnection uc = urlTime.openConnection();//生成连接对象
-                    uc.connect(); //发出连接
-                    long ld = uc.getDate(); //取得网站日期时间
-                    Date date = new Date(ld); //转换为标准时间对象
-                    Message message = new Message();
-                    message.what = SERVICER_TIME;
-                    message.obj = date;
-                    handler.sendMessage(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
 
