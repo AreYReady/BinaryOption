@@ -85,11 +85,11 @@
         android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="@android:color/black"/>
-    <android.support.v4.view.ViewPager
+    <com.xkj.binaryoption.widget.NoScrollViewPager
         android:id="@+id/vp_trade_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v4.view.ViewPager>
+    </com.xkj.binaryoption.widget.NoScrollViewPager>
 
 </LinearLayout>

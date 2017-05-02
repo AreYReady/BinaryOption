@@ -1,15 +1,6 @@
 package com.xkj.binaryoption.utils;
 
-import android.text.format.DateUtils;
 import android.util.Log;
-
-import com.xkj.binaryoption.R;
-import com.xkj.binaryoption.bean.BeanCurrentServerTime;
-import com.xkj.binaryoption.bean.RealTimeDataList;
-
-import java.math.BigDecimal;
-import java.util.Map;
-import java.util.TreeMap;
 
 
 /**
@@ -103,6 +94,11 @@ public class DataUtil {
                 break;
         }
         return mPeriod;
+    }
+
+
+    public static String symbolConnectPeriod(String symbol,int period){
+        return symbol.concat("_"+period);
     }
 
 

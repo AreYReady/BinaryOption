@@ -6,7 +6,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,6 +16,7 @@ import com.xkj.binaryoption.base.BaseActivity;
 import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.mvp.trade.opening.OpenFragment;
 import com.xkj.binaryoption.mvp.trade.pending.PendFragment;
+import com.xkj.binaryoption.widget.NoScrollViewPager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -44,7 +44,7 @@ public class TradeActivity extends BaseActivity {
     @BindView(R.id.tb_open_or_pend)
     TabLayout mTbOpenOrPend;
     @BindView(R.id.vp_trade_content)
-    ViewPager mVpTradeContent;
+    NoScrollViewPager mVpTradeContent;
     public static String ALL_SYMBOLS_DATA="allSymbolsbean";
     private List<BaseFragment> mFragmentList=new ArrayList<>();
     private List<String> mStrings=new ArrayList<>();
@@ -81,8 +81,8 @@ public class TradeActivity extends BaseActivity {
         mStrings.add("下单交易");
         mStrings.add("持仓记录");
         mVpTradeContent.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        mVpTradeContent.setNoScroll(true);
         mTbOpenOrPend.setupWithViewPager(mVpTradeContent);
-
     }
 
     @OnClick({R.id.iv_uesr, R.id.b_deposit, R.id.b_withdraw})

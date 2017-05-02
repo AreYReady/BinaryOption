@@ -3,27 +3,21 @@ package com.xkj.binaryoption.bean;
 import java.util.List;
 
 /**
- * 历史订单记录
+ * Created by huangsc on 2017-05-02.
+ * TODO:
  */
-public class BeanHistoryOrder {
+
+public class BeanCurrentOrder {
 
     /**
-     * count : 100
-     * items : [{"close_price":"0.85061","close_time":"2017-02-21 15:25:15","commision_level":85,"direction":1,"money":10,"open_price":"0.85055","open_time":"2017-02-21 15:24:15","result":2,"symbol":"EURGBPbo","ticket":4524411,"time_span":60}]
-     * msg_type : 290
+     * msg_type : 310
+     * ordercount : 1
+     * orders : [{"close_price":"1255.19","commision_level":75,"direction":1,"left_time":29561,"money":100,"open_price":"1255.16","open_time":"2017-05-02 17:12:29","symbol":"XAUUSDbo","ticket":4527777,"time_span":120}]
      */
 
-    private int count;
     private int msg_type;
-    private List<ItemsBean> items;
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
+    private int ordercount;
+    private List<OrdersBean> orders;
 
     public int getMsg_type() {
         return msg_type;
@@ -33,37 +27,43 @@ public class BeanHistoryOrder {
         this.msg_type = msg_type;
     }
 
-    public List<ItemsBean> getItems() {
-        return items;
+    public int getOrdercount() {
+        return ordercount;
     }
 
-    public void setItems(List<ItemsBean> items) {
-        this.items = items;
+    public void setOrdercount(int ordercount) {
+        this.ordercount = ordercount;
     }
 
-    public static class ItemsBean {
+    public List<OrdersBean> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrdersBean> orders) {
+        this.orders = orders;
+    }
+
+    public static class OrdersBean {
         /**
-         * close_price : 0.85061
-         * close_time : 2017-02-21 15:25:15
-         * commision_level : 85
+         * close_price : 1255.19
+         * commision_level : 75
          * direction : 1
-         * money : 10
-         * open_price : 0.85055
-         * open_time : 2017-02-21 15:24:15
-         * result : 2
-         * symbol : EURGBPbo
-         * ticket : 4524411
-         * time_span : 60
+         * left_time : 29561
+         * money : 100
+         * open_price : 1255.16
+         * open_time : 2017-05-02 17:12:29
+         * symbol : XAUUSDbo
+         * ticket : 4527777
+         * time_span : 120
          */
 
         private String close_price;
-        private String close_time;
         private int commision_level;
         private int direction;
+        private int left_time;
         private int money;
         private String open_price;
         private String open_time;
-        private int result;
         private String symbol;
         private int ticket;
         private int time_span;
@@ -74,14 +74,6 @@ public class BeanHistoryOrder {
 
         public void setClose_price(String close_price) {
             this.close_price = close_price;
-        }
-
-        public String getClose_time() {
-            return close_time;
-        }
-
-        public void setClose_time(String close_time) {
-            this.close_time = close_time;
         }
 
         public int getCommision_level() {
@@ -98,6 +90,14 @@ public class BeanHistoryOrder {
 
         public void setDirection(int direction) {
             this.direction = direction;
+        }
+
+        public int getLeft_time() {
+            return left_time;
+        }
+
+        public void setLeft_time(int left_time) {
+            this.left_time = left_time;
         }
 
         public int getMoney() {
@@ -122,14 +122,6 @@ public class BeanHistoryOrder {
 
         public void setOpen_time(String open_time) {
             this.open_time = open_time;
-        }
-
-        public int getResult() {
-            return result;
-        }
-
-        public void setResult(int result) {
-            this.result = result;
         }
 
         public String getSymbol() {

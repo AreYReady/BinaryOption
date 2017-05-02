@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xkj.binaryoption.R;
-import com.xkj.binaryoption.adapter.HistoryAdapter;
+import com.xkj.binaryoption.adapter.HistoryOrderAdapter;
 import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.bean.BeanHistoryOrder;
 import com.xkj.binaryoption.widget.DividerItemDecoration;
@@ -63,7 +63,7 @@ public class HistoryFragment extends BaseFragment {
     }
     @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
     public void EventHistoryOrder(BeanHistoryOrder beanHistoryOrder){
-        mRvHistoryInfo.setAdapter(new HistoryAdapter(mContext,beanHistoryOrder));
+        mRvHistoryInfo.setAdapter(new HistoryOrderAdapter(mContext,beanHistoryOrder));
         mRvHistoryInfo.setLayoutManager(new LinearLayoutManager(mContext));
         mRvHistoryInfo.addItemDecoration(new DividerItemDecoration(mContext,
                 DividerItemDecoration.VERTICAL_LIST));

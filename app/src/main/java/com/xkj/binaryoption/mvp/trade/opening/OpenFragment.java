@@ -26,6 +26,7 @@ import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.bean.BeanHistoryPrices;
 import com.xkj.binaryoption.bean.BeanHistoryRequest;
 import com.xkj.binaryoption.bean.BeanOrderResponse;
+import com.xkj.binaryoption.bean.BeanShowPrices;
 import com.xkj.binaryoption.bean.BeanSymbolConfig;
 import com.xkj.binaryoption.bean.BeanSymbolTag;
 import com.xkj.binaryoption.bean.RealTimeDataList;
@@ -33,12 +34,14 @@ import com.xkj.binaryoption.constant.MyConstant;
 import com.xkj.binaryoption.mvp.trade.TradeActivity;
 import com.xkj.binaryoption.mvp.trade.opening.contract.OpenContract;
 import com.xkj.binaryoption.mvp.trade.opening.presenter.OpenPresenterImpl;
+import com.xkj.binaryoption.utils.BigdecimalUtils;
 import com.xkj.binaryoption.utils.DataUtil;
 import com.xkj.binaryoption.utils.DateUtils;
 import com.xkj.binaryoption.utils.ThreadHelper;
 import com.xkj.binaryoption.utils.ToashUtil;
 import com.xkj.binaryoption.widget.CustomKLink;
 import com.xkj.binaryoption.widget.CustomPopupWindow;
+import com.xkj.binaryoption.widget.CustomShowPrices;
 import com.xkj.binaryoption.widget.CustomTimeLink;
 
 import org.greenrobot.eventbus.EventBus;
@@ -81,6 +84,8 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     ScrollView mScrollView;
     @BindView(R.id.ckl_content)
     CustomKLink mCklContent;
+    @BindView(R.id.cssp_content)
+    CustomShowPrices mCsspContent;
     private List<BeanSymbolTag> mBeanSymbolTags;
     private List<BeanSymbolTag> mDupBeanSymbolTags;
     private String mAllSubSymbols;
@@ -122,9 +127,11 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
                 setCurrentSymbol(mBeanSymbolTags.get(position).getSymbol());
                 if(mPeriod.equals("fenshi")) {
                     refreshTimeLink(mRealTimeDataMap);
-                }else {
+                } else {
                     sendHistoryPrices();
                 }
+                mTvDownAmount.setText(mBeanSymbolTags.get(position).getAmount());
+                mTvUpAmount.setText(mBeanSymbolTags.get(position).getAmount());
             }
         });
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
@@ -146,7 +153,19 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
                 mScrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 mCstContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
                 mCklContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
+                mCsspContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
                 Log.i(TAG, "initView: " + mScrollView.getWidth());
+            }
+        });
+        mCsspContent.setEventXListener(new CustomShowPrices.EventXListener() {
+            @Override
+            public void getX(float x) {
+                if(mCklContent.getVisibility()==View.VISIBLE){
+                    BeanShowPrices beanShowPrices = mCklContent.getBeanShowPrices(x);
+                    if(beanShowPrices!=null){
+                        mCsspContent.setShowPricesData(beanShowPrices);
+                    }
+                }
             }
         });
         setCurrentSymbol(mBeanSymbolTags.get(0).getSymbol());
@@ -180,7 +199,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
             }
         });
         tab.select();
-        sendHistoryPrices();
+//        sendHistoryPrices();
     }
 
     @Override
@@ -209,15 +228,16 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     }
 
     private void sendHistoryPrices() {
-        if (mHistoryPricesMap.containsKey(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod))) {
-            mCklContent.postInvalidate(mHistoryPricesMap.get(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod)));
+        if (mHistoryPricesMap.containsKey(DataUtil.symbolConnectPeriod(mCurrentSymbol, DataUtil.selectPeriod(mPeriod)))) {
+            mCklContent.postInvalidate(mHistoryPricesMap.get(DataUtil.symbolConnectPeriod(mCurrentSymbol, DataUtil.selectPeriod(mPeriod))));
         } else {
             mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, bar_count, mPeriod));
         }
     }
-    private void sendHistoryPrices(RealTimeDataList.BeanRealTime beanRealTime){
-        if (mHistoryPricesMap.containsKey(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod))) {
-            mCklContent.postInvalidate(mHistoryPricesMap.get(mCurrentSymbol + "_" + DataUtil.selectPeriod(mPeriod)),beanRealTime);
+
+    private void sendHistoryPrices(RealTimeDataList.BeanRealTime beanRealTime) {
+        if (mHistoryPricesMap.containsKey(DataUtil.symbolConnectPeriod(mCurrentSymbol, DataUtil.selectPeriod(mPeriod)))) {
+            mCklContent.postInvalidate(mHistoryPricesMap.get(DataUtil.symbolConnectPeriod(mCurrentSymbol, DataUtil.selectPeriod(mPeriod))), beanRealTime);
         } else {
             mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, bar_count, mPeriod));
         }
@@ -263,7 +283,28 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
         refreshSymbolsTag(realTimeDataList);
         refreshRealTimeLink(realTimeDataList);
         refreshKLink(realTimeDataList);
+        refreshButton(realTimeDataList);
     }
+
+    /**
+     * 刷新下单按钮
+     * @param realTimeDataList
+     */
+    private void refreshButton(RealTimeDataList realTimeDataList) {
+        for(final RealTimeDataList.BeanRealTime beanRealTime:realTimeDataList.getQuotes()){
+            if(beanRealTime.getSymbol().equals(mCurrentSymbol)){
+                ThreadHelper.instance().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTvDownAmount.setText(String.valueOf(beanRealTime.getBid()));
+                        mTvUpAmount.setText(String.valueOf(beanRealTime.getBid()));
+                    }
+                });
+                break;
+            }
+        }
+    }
+
 
     /**
      * 刷新K线图数据
@@ -271,28 +312,49 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
      * @param realTimeDataList
      */
 
+    int[] mPeriods = new int[]{5, 15, 60, 1440};
+
     private void refreshKLink(RealTimeDataList realTimeDataList) {
         String symbolm5;
         String symbolm15;
         String symbolmh1;
         String symbolmd1;
+        BeanHistoryPrices beanHistoryPrices;
+        String[] split;
+        if (mHistoryPricesMap.size() == 0) {
+            return;
+        }
         for (RealTimeDataList.BeanRealTime beanRealTime : realTimeDataList.getQuotes()) {
-            if (mHistoryPricesMap.containsKey(symbolm5 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("m5")))) {
-                //娶最后的时间进行计算，如果还没超过当前时间点，那么时间有效，计算最后一个时间，如果时间超过，删除第一个时间点，增加一个新的时间点
-
+            for (int period : mPeriods) {
+                if (mHistoryPricesMap.containsKey(DataUtil.symbolConnectPeriod(beanRealTime.getSymbol(), period))) {
+                    beanHistoryPrices = mHistoryPricesMap.get(DataUtil.symbolConnectPeriod(beanRealTime.getSymbol(), period));
+                    //娶最后的时间进行计算，如果还没超过当前时间点，那么时间有效，计算最后一个时间，如果时间超过，删除第一个时间点，增加一个新的时间点
+                    Log.i(TAG, "refreshKLink: " + DateUtils.getOrderStartTimeNoTimeZone(beanRealTime.getTime()) / 1000 + "  最后一个时间" + (long) beanHistoryPrices.getItems().get(beanHistoryPrices.getCount() - 1).getT());
+                    if (DateUtils.getOrderStartTimeNoTimeZone(beanRealTime.getTime()) / 1000 - (long) beanHistoryPrices.getItems().get(beanHistoryPrices.getCount() - 1).getT() > period * 60) {
+                        //超出时间
+                        beanHistoryPrices.getItems().add(new BeanHistoryPrices.ItemsBean(
+                                BigdecimalUtils.movePointRight(String.valueOf(beanRealTime.getBid()), beanHistoryPrices.getDigits()).concat("|0|0|0"),
+                                beanHistoryPrices.getItems().get(beanHistoryPrices.getCount() - 1).getT() + period * 60,
+                                0,
+                                DateUtils.getShowTimeNoTimeZone((long) (beanHistoryPrices.getItems().get(beanHistoryPrices.getCount() - 1).getT() + period * 60) * 1000, "MM-dd hh:mm")));
+                        beanHistoryPrices.getItems().remove(0);
+                    } else {
+                        //没超出时间
+                        split = beanHistoryPrices.getItems().get(beanHistoryPrices.getCount() - 1).getO().split("\\|");
+                        if (BigdecimalUtils.movePointRight(beanRealTime.getBid(), beanHistoryPrices.getDigits()) > Double.valueOf(split[0]) + Double.valueOf(split[1])) {
+                            //大于最大值
+                            split[1] = BigdecimalUtils.sub(BigdecimalUtils.movePointRight(String.valueOf(beanRealTime.getBid()), beanHistoryPrices.getDigits()), split[0]);
+                        } else if (BigdecimalUtils.movePointRight(beanRealTime.getBid(), beanHistoryPrices.getDigits()) < Double.valueOf(split[0]) + Double.valueOf(split[2])) {
+                            split[2] = BigdecimalUtils.sub(BigdecimalUtils.movePointRight(String.valueOf(beanRealTime.getBid()), beanHistoryPrices.getDigits()), split[0]);
+                        }
+                        split[3] = BigdecimalUtils.sub(BigdecimalUtils.movePointRight(String.valueOf(beanRealTime.getBid()), beanHistoryPrices.getDigits()), split[0]);
+                        beanHistoryPrices.getItems().get(beanHistoryPrices.getCount() - 1).setO(split[0].concat("|").concat(split[1]).concat("|").concat(split[2]).concat("|").concat(split[3]));
+                    }
+                }
             }
-            if (mHistoryPricesMap.containsKey(symbolm15 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("m15")))) {
-
-            }
-            if (mHistoryPricesMap.containsKey(symbolmh1 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("h1")))) {
-
-            }
-            if (mHistoryPricesMap.containsKey(symbolmd1 = beanRealTime.getSymbol().concat("_" + DataUtil.selectPeriod("d1")))) {
-
-            }
-            if (!mPeriod.equals("fenshi")&&beanRealTime.getSymbol().equals(mCurrentSymbol)) {
+            if (!mPeriod.equals("fenshi") && beanRealTime.getSymbol().equals(mCurrentSymbol)) {
 //                是当前商品，刷新k线图
-                 sendHistoryPrices(beanRealTime);
+                sendHistoryPrices(beanRealTime);
             }
         }
     }
@@ -416,15 +478,16 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void eventHistoryPrices(BeanHistoryPrices beanHistoryPrices) {
         Log.i(TAG, "eventHistoryPrices: 历史报价");
-        mHistoryPricesMap.put(beanHistoryPrices.getSymbol() + "_" + beanHistoryPrices.getPeriod(), beanHistoryPrices);
-        int beginTime=0;
-         BeanHistoryPrices.ItemsBean itemsBean;
-        for(int i=0;i<mHistoryPricesMap.size();i++){
-            if(i!=0){
-                beanHistoryPrices.getItems().get(0).setTimeString(DateUtils.getShowTimeNoTimeZone(beginTime+beanHistoryPrices.getItems().get(i).getT(),"MM-dd hh:mm"));
-            }else if(i==0){
-                beginTime=beanHistoryPrices.getItems().get(0).getT();
-                beanHistoryPrices.getItems().get(0).setTimeString(DateUtils.getShowTimeNoTimeZone(beginTime,"MM-dd hh:mm"));
+        mHistoryPricesMap.put(DataUtil.symbolConnectPeriod(beanHistoryPrices.getSymbol(), beanHistoryPrices.getPeriod()), beanHistoryPrices);
+        long beginTime = 0;
+        BeanHistoryPrices.ItemsBean itemsBean;
+        for (int i = 0; i < beanHistoryPrices.getCount(); i++) {
+            if (i > 0) {
+                beanHistoryPrices.getItems().get(i).setTimeString(DateUtils.getShowTimeNoTimeZone((beginTime + beanHistoryPrices.getItems().get(i).getT()) * 1000, "MM-dd hh:mm"));
+                beanHistoryPrices.getItems().get(i).setT((int) beginTime + beanHistoryPrices.getItems().get(i).getT());
+            } else if (i == 0) {
+                beginTime = beanHistoryPrices.getItems().get(0).getT();
+                beanHistoryPrices.getItems().get(0).setTimeString(DateUtils.getShowTimeNoTimeZone(1000 * beginTime, "MM-dd hh:mm"));
             }
         }
         if (mCurrentSymbol.equals(beanHistoryPrices.getSymbol()) && beanHistoryPrices.getPeriod() == DataUtil.selectPeriod(mPeriod)) {

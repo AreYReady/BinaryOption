@@ -78,7 +78,7 @@ public class CustomTimeLink extends View {
     public void setWidthHeight(int width, int height) {
         this.mHeight = height;
         this.mWidth = width;
-        mLinkHeight =mHeight-mHeight/ MyConstant.LINK_FREE_SPACE_H;
+        mLinkHeight =mHeight;
         mLinkWidth =mWidth-mWidth/MyConstant.LINK_FREE_SPACE_W;
     }
     /**

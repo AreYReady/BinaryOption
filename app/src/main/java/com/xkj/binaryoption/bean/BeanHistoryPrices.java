@@ -84,6 +84,16 @@ public class BeanHistoryPrices {
     }
 
     public static class ItemsBean {
+        public ItemsBean(String o, int t, int v, String timeString) {
+            this.o = o;
+            this.t = t;
+            this.v = v;
+            this.timeString = timeString;
+        }
+
+        public ItemsBean() {
+        }
+
         /**
          * o : 126972|28|-14|-14
          * t : 1493267100
