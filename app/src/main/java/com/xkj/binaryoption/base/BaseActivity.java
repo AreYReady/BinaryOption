@@ -1,5 +1,6 @@
 package com.xkj.binaryoption.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,10 +24,12 @@ import static com.xkj.binaryoption.handler.HandlerSend.CONNECT;
 
 public abstract class BaseActivity extends AppCompatActivity {
     protected String TAG= SystemUtil.getTAG(this);
+    protected Context mContext;
     private Handler mHandler;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext=this;
         initRegister();
         initView();
         initData();

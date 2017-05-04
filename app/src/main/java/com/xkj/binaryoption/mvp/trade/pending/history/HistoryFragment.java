@@ -12,11 +12,15 @@ import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.adapter.HistoryOrderAdapter;
 import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.bean.BeanHistoryOrder;
+import com.xkj.binaryoption.bean.BeanOrderResult;
+import com.xkj.binaryoption.utils.ThreadHelper;
 import com.xkj.binaryoption.widget.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,18 +35,29 @@ public class HistoryFragment extends BaseFragment {
     @BindView(R.id.rv_history_info)
     RecyclerView mRvHistoryInfo;
     Unbinder unbinder;
+    private BeanHistoryOrder mBeanHistoryOrder;
+    private HistoryOrderAdapter mHistoryOrderAdapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_demo, container, false);
+        view = inflater.inflate(R.layout.fragment_history_order, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
     protected void initView() {
+            initRv();
 
+    }
+
+    private void initRv() {
+        mRvHistoryInfo.setAdapter(mHistoryOrderAdapter=new HistoryOrderAdapter(mContext,mBeanHistoryOrder));
+        mRvHistoryInfo.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvHistoryInfo.addItemDecoration(new DividerItemDecoration(mContext,
+
+                DividerItemDecoration.VERTICAL_LIST));
     }
 
     @Override
@@ -63,9 +78,37 @@ public class HistoryFragment extends BaseFragment {
     }
     @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
     public void EventHistoryOrder(BeanHistoryOrder beanHistoryOrder){
-        mRvHistoryInfo.setAdapter(new HistoryOrderAdapter(mContext,beanHistoryOrder));
-        mRvHistoryInfo.setLayoutManager(new LinearLayoutManager(mContext));
-        mRvHistoryInfo.addItemDecoration(new DividerItemDecoration(mContext,
-                DividerItemDecoration.VERTICAL_LIST));
+        mBeanHistoryOrder=beanHistoryOrder;
+    }
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void eventOrderResult (BeanOrderResult beanOrderResult){
+        if(beanOrderResult.getStatus()==1){
+            final BeanHistoryOrder.ItemsBean itemsBean=new BeanHistoryOrder.ItemsBean();
+            itemsBean.setResult(beanOrderResult.getResult());
+            itemsBean.setClose_price(String.valueOf(beanOrderResult.getClose_price()));
+            itemsBean.setTime_span(beanOrderResult.getTime_span());
+            itemsBean.setTicket(beanOrderResult.getTicket());
+            itemsBean.setSymbol(beanOrderResult.getSymbol());
+            itemsBean.setClose_time(beanOrderResult.getClose_time());
+            itemsBean.setCommision_level(beanOrderResult.getCommision_level());
+            itemsBean.setDirection(beanOrderResult.getDirection());
+            itemsBean.setMoney((int)beanOrderResult.getMoney());
+            itemsBean.setOpen_price(String.valueOf(beanOrderResult.getOpen_price()));
+            itemsBean.setOpen_time(beanOrderResult.getOpen_time());
+            if(mBeanHistoryOrder.getItems()==null){
+                mBeanHistoryOrder.setItems(new ArrayList<BeanHistoryOrder.ItemsBean>());
+            }
+
+            ThreadHelper.instance().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mBeanHistoryOrder.getItems().add(0,itemsBean);
+                    if(mHistoryOrderAdapter!=null){
+                        mHistoryOrderAdapter.notifyItemInserted(0);
+                    }
+                }
+            });
+        }
+
     }
 }

@@ -14,11 +14,14 @@ import android.widget.TextView;
 import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.base.BaseActivity;
 import com.xkj.binaryoption.base.BaseFragment;
+import com.xkj.binaryoption.bean.BeanCurrentOrder;
 import com.xkj.binaryoption.mvp.trade.opening.OpenFragment;
 import com.xkj.binaryoption.mvp.trade.pending.PendFragment;
 import com.xkj.binaryoption.widget.NoScrollViewPager;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,8 @@ public class TradeActivity extends BaseActivity {
     private List<BaseFragment> mFragmentList=new ArrayList<>();
     private List<String> mStrings=new ArrayList<>();
     private String allSymbol;
+    private int count=5;
+    private MyPagerAdapter mMyPagerAdapter;
 
 
     @Override
@@ -80,9 +85,10 @@ public class TradeActivity extends BaseActivity {
         mFragmentList.add(new PendFragment());
         mStrings.add("下单交易");
         mStrings.add("持仓记录");
-        mVpTradeContent.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        mVpTradeContent.setAdapter(mMyPagerAdapter=new MyPagerAdapter(getSupportFragmentManager()));
         mVpTradeContent.setNoScroll(true);
         mTbOpenOrPend.setupWithViewPager(mVpTradeContent);
+//        setUpTabBadge();
     }
 
     @OnClick({R.id.iv_uesr, R.id.b_deposit, R.id.b_withdraw})
@@ -96,6 +102,12 @@ public class TradeActivity extends BaseActivity {
                break;
         }
     }
+
+    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
+    public void eventCurrentOrder(BeanCurrentOrder beanCurrentOrder){
+//        count=beanCurrentOrder.getOrders()==null?0:beanCurrentOrder.getOrders().size();
+    }
+
    public class MyPagerAdapter extends FragmentPagerAdapter{
        public MyPagerAdapter(FragmentManager fm) {
            super(fm);
@@ -113,6 +125,7 @@ public class TradeActivity extends BaseActivity {
 
        @Override
        public CharSequence getPageTitle(int position) {
+
            return mStrings.get(position);
        }
    }

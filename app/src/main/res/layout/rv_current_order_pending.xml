@@ -10,6 +10,7 @@
         android:layout_weight="130"
         android:layout_height="match_parent">
         <ImageView
+            android:id="@+id/iv_flag"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@mipmap/red"
@@ -111,12 +112,25 @@
         </LinearLayout>
 
     </LinearLayout>
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="0dip"
         android:layout_weight="120"
-        android:gravity="left|center_vertical"
-        android:orientation="vertical"
         android:layout_height="match_parent">
-
-    </LinearLayout>
+        <ProgressBar
+            android:layout_centerInParent="true"
+            android:id="@+id/pb_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:background="@drawable/progress_background"
+            android:progressDrawable="@drawable/progress_"
+            />
+        <TextView
+            android:layout_centerInParent="true"
+            android:id="@+id/tv_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_desc_small"
+            />
+    </RelativeLayout>
 </LinearLayout>

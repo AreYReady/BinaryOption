@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.xkj.binaryoption.R;
@@ -19,6 +21,7 @@ import butterknife.ButterKnife;
  */
 
 public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapter.CurrentHolder> {
+
 
 
     private Context mContext;
@@ -37,12 +40,24 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
 
     @Override
     public void onBindViewHolder(CurrentHolder holder, int position) {
+        BeanCurrentOrder.OrdersBean ordersBean = mBeanCurrentOrder.getOrders().get(position);
+        holder.mTvAmountAcount.setText(String.valueOf(ordersBean.getMoney()));
+        holder.mTvBuyPrice.setText(String.valueOf(ordersBean.getOpen_price()));
+        holder.mTvOrderTime.setText(ordersBean.getOpen_time());
+        holder.mTvSymbol.setText(ordersBean.getSymbol());
+        holder.mPbProgressbar.setMax(ordersBean.getTime_span());
+        holder.mTvProgress.setText(ordersBean.getLeft_time()/1000+"/"+ordersBean.getTime_span());
+        holder.mPbProgressbar.setProgress(ordersBean.getLeft_time()/1000);
+        if(ordersBean.getDirection()==0){
+            holder.mIvFlag.setImageResource(R.mipmap.green);
+        }else{
+            holder.mIvFlag.setImageResource(R.mipmap.red);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mBeanCurrentOrder.getOrders()==null?0:mBeanCurrentOrder.getOrders().size();
-//        return  20;
+        return mBeanCurrentOrder.getOrders() == null ? 0 : mBeanCurrentOrder.getOrders().size();
     }
 
     class CurrentHolder extends RecyclerView.ViewHolder {
@@ -56,6 +71,12 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
         TextView mTvCurrentPrice;
         @BindView(R.id.tv_order_time)
         TextView mTvOrderTime;
+        @BindView(R.id.pb_progressbar)
+        ProgressBar mPbProgressbar;
+        @BindView(R.id.tv_progress)
+        TextView mTvProgress;
+        @BindView(R.id.iv_flag)
+        ImageView mIvFlag;
         public CurrentHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

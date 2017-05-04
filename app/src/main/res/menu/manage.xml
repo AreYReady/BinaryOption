@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/add"
+        android:icon="@mipmap/home"
+        android:title="首页" />
+    <item
+        android:id="@+id/delete"
+        android:icon="@mipmap/user"
+        android:title="个人中心" />
+
+</menu>
