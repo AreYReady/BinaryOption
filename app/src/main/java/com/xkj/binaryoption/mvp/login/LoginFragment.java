@@ -76,8 +76,14 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
     @Override
     protected void initData() {
         mPreListener=  new LoginPresenterCompl(this,mContext);
-        mCetAccount.setText("10001");
-        mCetPassword.setText("123456a");
+//        mCetAccount.setText("10001");
+//        mCetPassword.setText("123456a");
+        if(ACache.get(mContext).getAsString(MyConstant.IS_REMEMBER)!=null&&ACache.get(mContext).getAsString(MyConstant.IS_REMEMBER).equals("true")){
+            if(!ACache.get(mContext).getAsString(MyConstant.user_name).isEmpty()){
+                mCetAccount.setText(ACache.get(mContext).getAsString(MyConstant.user_name));
+                mCetPassword.setText(AesEncryptionUtil.decrypt(ACache.get(mContext).getAsString(MyConstant.user_password)));
+            }
+        }
     }
     @Override
     protected void initView() {
@@ -132,6 +138,7 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
             Log.i(TAG, "onLoginResult: 记录账号密码");
             ACache.get(mContext).put(MyConstant.user_name,mCetAccount.getText().toString());
             ACache.get(mContext).put(MyConstant.user_password,AesEncryptionUtil.encrypt(mCetPassword.getText().toString()));
+            ACache.get(mContext).put(MyConstant.IS_REMEMBER,mCbRemember.isChecked()?"true":"false");
         } else {
             if(code==-100){//服务器出错，超时等
                 showToast("网路或者服务器出错了，请稍后重试");

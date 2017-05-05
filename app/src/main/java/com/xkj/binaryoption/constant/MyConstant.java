@@ -15,6 +15,7 @@ public  class MyConstant {
     }
     public static String user_name="Login";
     public static String user_password="password";
+    public static String IS_REMEMBER="is_remember";
 
 
 

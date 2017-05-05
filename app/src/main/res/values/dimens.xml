@@ -6,9 +6,10 @@
     <dimen name="v_button_enter_h">33dip</dimen>
     <dimen name="v_button_amount_h">30dip</dimen>
     <dimen name="v_button_pay_h">30dip</dimen>
-    <dimen name="v_button_money_w">70dip</dimen>
     <dimen name="v_ll_trade_head_h">88dip</dimen>
     <dimen name="v_tl_h">50dip</dimen>
+    <dimen name="v_button_money_w">65dip</dimen>
+    <dimen name="Exit_text_w">145dip</dimen>
 
     <dimen name="space_big">10dip</dimen>
     <dimen name="space_big_half">5.25dip</dimen>

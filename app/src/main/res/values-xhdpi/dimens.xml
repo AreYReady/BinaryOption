@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="v_button_money_w">65dip</dimen>
+    <dimen name="Exit_text_w">145dip</dimen>
+</resources>

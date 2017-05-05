@@ -99,6 +99,7 @@ public class CustomPopupWindow extends PopupWindow {
         mButtonList.add(mBButton4);
         mButtonList.add(mBButton5);
         mButtonList.add(mBButton6);
+        mBButton1.setSelected(true);
         if (buyAciton == MyConstant.BuyAciton.BUY_DOWN) {
             mTvActionTitle.setBackgroundResource(R.color.background_button_green_normal);
             mTvActionTitle.setText(symbolsBean.getSymbol().concat("//买跌"));
@@ -214,6 +215,13 @@ public class CustomPopupWindow extends PopupWindow {
             case R.id.b_button6:
                 break;
 
+        }
+        for(Button button:mButtonList){
+            if(button.getId()==view.getId()){
+                button.setSelected(true);
+            }else{
+                button.setSelected(false);
+            }
         }
         amount = ((Button) view).getText().toString();
         Log.i(TAG, "onCheckedChanged: " + amount);
