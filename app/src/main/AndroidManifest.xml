@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mvp.manage.UserManageActivity">
+        <activity android:name=".mvp.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -19,5 +19,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".mvp.trade.TradeActivity"/>
+        <activity android:name=".mvp.manage.UserManageActivity"/>
     </application>
 </manifest>

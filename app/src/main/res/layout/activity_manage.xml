@@ -72,12 +72,17 @@
         android:background="@color/link_gray"
         android:layout_width="match_parent"
         android:layout_height="1dip"/>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_manager"
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/rv_manager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dip"-->
+        <!--android:layout_weight="869">-->
+    <!--</android.support.v7.widget.RecyclerView>-->
+    <FrameLayout
+        android:id="@+id/fl_index_context"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="869">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_weight="869"></FrameLayout>
 
     <View
         android:background="@color/link_gray"

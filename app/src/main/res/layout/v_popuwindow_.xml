@@ -23,119 +23,113 @@
             android:gravity="center"
             android:text="比特币/买跌"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/space_xxbig"
-            android:layout_marginTop="@dimen/space_xxxbig"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                style="@style/text_desc_"
-                android:text="快速选择："/>
-
-            <RadioGroup
-                android:id="@+id/rg_amount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:checkedButton="@+id/rb_100"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/rb_100"
-                    style="@style/text_desc_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/space_big_half"
-                    android:background="@drawable/button_select_orange"
-                    android:button="@null"
-                    android:padding="@dimen/space_big_half"
-                    android:tag="100"
-                    android:text="100元"/>
-
-                <RadioButton
-                    style="@style/text_desc_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/space_big_half"
-                    android:background="@drawable/button_select_orange"
-                    android:button="@null"
-                    android:padding="@dimen/space_big_half"
-                    android:tag="200"
-                    android:text="200元"/>
-
-                <RadioButton
-                    style="@style/text_desc_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/space_big_half"
-                    android:background="@drawable/button_select_orange"
-                    android:button="@null"
-                    android:padding="@dimen/space_big_half"
-                    android:tag="500"
-                    android:text="500元"/>
-
-                <RadioButton
-                    style="@style/text_desc_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/space_big_half"
-                    android:background="@drawable/button_select_orange"
-                    android:button="@null"
-                    android:padding="@dimen/space_big_half"
-                    android:tag="1000"
-                    android:text="1000元"/>
-
-                <RadioButton
-                    style="@style/text_desc_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/space_big_half"
-                    android:background="@drawable/button_select_orange"
-                    android:button="@null"
-                    android:padding="@dimen/space_big_half"
-                    android:tag="2000"
-                    android:text="2000元"/>
-
-                <RadioButton
-                    style="@style/text_desc_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/space_big_half"
-                    android:background="@drawable/button_select_orange"
-                    android:button="@null"
-                    android:padding="@dimen/space_big_half"
-                    android:tag="5000"
-                    android:text="5000元"/>
-            </RadioGroup>
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/space_xxbig"
-            android:layout_marginTop="@dimen/space_xxxbig"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/text_desc_"
-                android:layout_gravity="center_vertical"
-                android:text="时间周期："/>
-
-            <RadioGroup
-                android:id="@+id/rg_time_period"
+            android:layout_marginLeft="@dimen/space_xxxbig"
+            android:layout_marginRight="@dimen/space_xxxbig"
+            android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="@style/text_desc_small"
+            android:layout_marginTop="@dimen/space_xbig"
+            android:layout_marginBottom="@dimen/space_big"
+            android:gravity="center_vertical"
+            android:text="快速选择（单位人民币）："/>
+       
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
-            </RadioGroup>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerInParent="true">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/b_button1"
+                        android:layout_width="@dimen/v_button_money_w"
+                        android:layout_height="@dimen/v_button_pay_h"
+                        android:text="5000"
+                        style="@style/pay_button_selsct"
+                        />
+                    <Button
+                        android:id="@+id/b_button2"
+                        android:layout_width="@dimen/v_button_money_w"
+                        android:layout_height="@dimen/v_button_pay_h"
+                        android:text="5000"
+                        style="@style/pay_button_selsct"/>
+                    <LinearLayout
+                        android:layout_width="0dip"
+                        android:layout_weight="2"
+                        android:layout_height="wrap_content">
+                        <Button
+                            android:id="@+id/b_button3"
+                            android:layout_width="@dimen/v_button_money_w"
+                            android:layout_height="@dimen/v_button_pay_h"
+                            android:text="5000"
+                            style="@style/pay_button_selsct"/>
+                        <Button
+                            android:id="@+id/b_button4"
+                            android:layout_width="@dimen/v_button_money_w"
+                            android:layout_height="@dimen/v_button_pay_h"
+                            android:text="5000"
+                            style="@style/text_desc_"
+                            android:background="@drawable/button_select_orange"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xbig"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/b_button5"
+                        android:layout_width="@dimen/v_button_money_w"
+                        android:layout_height="@dimen/v_button_pay_h"
+                        android:text="5000"
+                        android:layout_marginBottom="@dimen/space_big"
+                        style="@style/pay_button_selsct"/>
+                    <Button
+                        android:id="@+id/b_button6"
+                        android:layout_width="@dimen/v_button_money_w"
+                        android:layout_height="@dimen/v_button_pay_h"
+                        android:text="5000"
+                        style="@style/pay_button_selsct"/>
+                    <EditText
+                        android:id="@+id/et_money"
+                        android:layout_width="155dip"
+                        android:background="@drawable/button_select_orange"
+                        android:layout_height="@dimen/v_button_pay_h"
+                        style="@style/text_desc_small"
+                        android:textColorHint="@color/text_color_white"
+                        android:gravity="center"
+                        android:hint="输入金额，最小为100"/>
+                </LinearLayout>
+            </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="@style/text_desc_small"
+            android:layout_marginTop="@dimen/space_big"
+            android:layout_marginBottom="@dimen/space_big"
+            android:gravity="center_vertical"
+            android:text="时间周期（单位秒）："/>
+               <RadioGroup
+                   android:id="@+id/rg_time_period"
+                   android:layout_width="match_parent"
+                   android:orientation="horizontal"
+                   android:layout_height="wrap_content">
+               </RadioGroup>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_time_period"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
 
-        </LinearLayout>
-
+            </android.support.v7.widget.RecyclerView>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -176,10 +170,12 @@
             style="@style/text_desc_"
             android:layout_width="match_parent"
             android:layout_height="@dimen/v_button_enter_h"
-            android:layout_margin="@dimen/space_xxbig"
+            android:layout_marginBottom="@dimen/space_xbig"
+            android:layout_marginTop="@dimen/space_xbig"
             android:background="@drawable/button_orange"
             android:gravity="center"
             android:text="确定"
             />
+    </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

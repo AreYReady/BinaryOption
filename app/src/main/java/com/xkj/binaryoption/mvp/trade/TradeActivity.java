@@ -1,5 +1,6 @@
 package com.xkj.binaryoption.mvp.trade;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -15,6 +16,7 @@ import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.base.BaseActivity;
 import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.bean.BeanCurrentOrder;
+import com.xkj.binaryoption.mvp.manage.UserManageActivity;
 import com.xkj.binaryoption.mvp.trade.opening.OpenFragment;
 import com.xkj.binaryoption.mvp.trade.pending.PendFragment;
 import com.xkj.binaryoption.widget.NoScrollViewPager;
@@ -95,6 +97,7 @@ public class TradeActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_uesr:
+                startActivity(new Intent(this, UserManageActivity.class));
                 break;
             case R.id.b_deposit:
                 break;

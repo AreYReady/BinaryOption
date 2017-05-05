@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
  * TODO:
  */
 
-public class SymbolsTagAdapter extends RecyclerView.Adapter<MyHolder> {
+public class SymbolsTagAdapter extends RecyclerView.Adapter<SymbolsTagAdapter.MyHolder> {
     private List<BeanSymbolTag> mBeanSymbolTags;
     private Context mContext;
     private OnItemClickListener mOnItemClickListener;
@@ -135,26 +135,26 @@ public class SymbolsTagAdapter extends RecyclerView.Adapter<MyHolder> {
         return mBeanSymbolTags.size();
     }
 
+    class MyHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.tv_symbol)
+        TextView mTvSymbol;
+        @BindView(R.id.rl_tag_parent)
+        RelativeLayout mRlTagParent;
+        @BindView(R.id.tv_symbol_amount)
+        TextView mTvSymbolAmount;
+        @BindView(R.id.iv_symbol_icon)
+        ImageView mIvSymbolIcon;
+        @BindView(R.id.v_link)
+        View mVLink;
 
+        public MyHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
 }
 
 
 
 
-class MyHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.tv_symbol)
-    TextView mTvSymbol;
-    @BindView(R.id.rl_tag_parent)
-    RelativeLayout mRlTagParent;
-    @BindView(R.id.tv_symbol_amount)
-    TextView mTvSymbolAmount;
-    @BindView(R.id.iv_symbol_icon)
-    ImageView mIvSymbolIcon;
-    @BindView(R.id.v_link)
-    View mVLink;
 
-    public MyHolder(View itemView) {
-        super(itemView);
-        ButterKnife.bind(this, itemView);
-    }
 }

@@ -4,6 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="v_editText_h">45dp</dimen>
     <dimen name="v_button_enter_h">33dip</dimen>
+    <dimen name="v_button_amount_h">30dip</dimen>
+    <dimen name="v_button_pay_h">30dip</dimen>
+    <dimen name="v_button_money_w">70dip</dimen>
     <dimen name="v_ll_trade_head_h">88dip</dimen>
     <dimen name="v_tl_h">50dip</dimen>
 
@@ -15,6 +18,7 @@
     <dimen name="space_normal">6.0dip</dimen>
     <dimen name="space_small">4.0dip</dimen>
     <dimen name="space_xbig">14.5dip</dimen>
+    <dimen name="space_xbig_two">29dip</dimen>
     <dimen name="space_xbig_half">7.25dip</dimen>
     <dimen name="space_xxbig">19.5dip</dimen>
     <dimen name="space_xxbig_half">9.75dip</dimen>

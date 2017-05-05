@@ -2,9 +2,8 @@ package com.xkj.binaryoption.mvp.manage;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,13 +11,12 @@ import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.adapter.ManagerAdapter;
 import com.xkj.binaryoption.base.BaseActivity;
 import com.xkj.binaryoption.bean.BeanManages;
-import com.xkj.binaryoption.widget.DividerItemDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by huangsc on 2017-05-04.
@@ -27,16 +25,16 @@ import butterknife.ButterKnife;
 
 public class UserManageActivity extends BaseActivity {
 
+
     @BindView(R.id.tv_login)
     TextView mTvLogin;
-    @BindView(R.id.rv_manager)
-    RecyclerView mRvManager;
+    @BindView(R.id.fl_index_context)
+    FrameLayout mFlIndexContext;
     @BindView(R.id.ll_index)
     LinearLayout mLlIndex;
     @BindView(R.id.ll_user_manager)
     LinearLayout mLlUserManager;
     private ManagerAdapter mManagerAdapter;
-
     private List<BeanManages> mBeanManagesList;
 
     @Override
@@ -53,31 +51,21 @@ public class UserManageActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_index_context, new fragmentManage()).commit();
     }
 
     @Override
     protected void initData() {
-        mBeanManagesList = new ArrayList<>();
-        mBeanManagesList.add(new BeanManages("下单交易",R.mipmap.info01,"持仓记录",R.mipmap.info02));
-        mBeanManagesList.add(new BeanManages("预存资金",R.mipmap.info03,"提取资金",R.mipmap.info04));
-        mBeanManagesList.add(new BeanManages("绑定微信",R.mipmap.info05));
-        mBeanManagesList.add(new BeanManages("分享",R.mipmap.info06));
-        mBeanManagesList.add(new BeanManages("个人资料",R.mipmap.info07));
-        mBeanManagesList.add(new BeanManages("新手教程",R.mipmap.info08));
-        mBeanManagesList.add(new BeanManages("实名认证",R.mipmap.info09));
-        mBeanManagesList.add(new BeanManages("退出登录",R.mipmap.info10));
-        mRvManager.setAdapter(mManagerAdapter=new ManagerAdapter(mContext, mBeanManagesList));
-        mRvManager.setLayoutManager(new LinearLayoutManager(mContext));
-        mRvManager.addItemDecoration(new DividerItemDecoration(mContext,
-                DividerItemDecoration.VERTICAL_LIST));
-        mManagerAdapter.setOnItemClickListener(new ManagerAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(int position, String desc) {
-                Log.i(TAG, "onClick: "+desc);
-
-            }
-        });
     }
 
+    @OnClick({R.id.ll_index, R.id.ll_user_manager})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.ll_index:
+                finish();
+                break;
+            case R.id.ll_user_manager:
+                break;
+        }
+    }
 }
