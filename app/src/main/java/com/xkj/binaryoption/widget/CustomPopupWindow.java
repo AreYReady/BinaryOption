@@ -3,6 +3,8 @@ package com.xkj.binaryoption.widget;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -77,6 +79,7 @@ public class CustomPopupWindow extends PopupWindow {
     private int cycle;
     private String amount;
     private List<Button> mButtonList;
+    private TimePeriodAdapter mTimePeriodAdapter;
 
     public CustomPopupWindow(final Context context, final BeanSymbolConfig.SymbolsBean symbolsBean, final MyConstant.BuyAciton buyAciton, String currentPrice) {
         this.currentPrice = currentPrice;
@@ -113,10 +116,17 @@ public class CustomPopupWindow extends PopupWindow {
         }
         int i = 0;
         if (symbolsBean.getCycles() != null) {
-            mRvTimePeriod.setAdapter(new TimePeriodAdapter(context,symbolsBean));
+            mRvTimePeriod.setAdapter(mTimePeriodAdapter=new TimePeriodAdapter(context,symbolsBean,buyAciton));
             mRvTimePeriod.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
             percent = mSymbolsBean.getCycles().get(0).getPercent();
             cycle = mSymbolsBean.getCycles().get(0).getCycle();
+            mTimePeriodAdapter.setOnClickListener(new TimePeriodAdapter.OnClickListener() {
+                @Override
+                public void onClick(int position) {
+                    percent=symbolsBean.getCycles().get(position).getPercent();
+                    mTimePeriodAdapter.notifyDataSetChanged();
+                }
+            });
         }
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -128,16 +138,24 @@ public class CustomPopupWindow extends PopupWindow {
                 return true;
             }
         });
+        mEtMoney.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                checkMoney(editable.toString());
+            }
+        });
         amount = mBButton1.getText().toString();
         changeProfit();
-//        mRgAmount.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-//                amount = radioGroup.findViewById(i).getTag().toString();
-//                Log.i(TAG, "onCheckedChanged: " + amount);
-//                changeProfit();
-//            }
-//        });
 
         mTvCurrentPrice.setText(currentPrice);
         mRgTimePeriod.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -162,6 +180,16 @@ public class CustomPopupWindow extends PopupWindow {
                         , Integer.valueOf(amount), cycle, percent));
             }
         });
+    }
+
+    private void checkMoney(String amount) {
+        for(Button button:mButtonList){
+            if(button.getText().equals(amount)){
+                button.setSelected(true);
+            }else{
+                button.setSelected(false);
+            }
+        }
     }
 
     /**

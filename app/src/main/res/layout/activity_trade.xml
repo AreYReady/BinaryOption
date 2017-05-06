@@ -65,22 +65,50 @@
                     android:layout_height="25dip"
                     android:background="@drawable/button_orange"/>
                 </LinearLayout>
-
             </FrameLayout>
         </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="@android:color/black"/>
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tb_open_or_pend"
+    <!--<android.support.design.widget.TabLayout-->
+        <!--android:id="@+id/tb_open_or_pend"-->
+        <!--android:layout_width="match_parent"-->
+        <!--app:tabTextColor="@android:color/white"-->
+        <!--app:tabSelectedTextColor="@color/background_button_orange_normal"-->
+        <!--app:tabIndicatorColor="@android:color/transparent"-->
+        <!--android:layout_height="35dip">-->
+    <!--</android.support.design.widget.TabLayout>-->
+    <LinearLayout
         android:layout_width="match_parent"
-        app:tabTextColor="@android:color/white"
-        app:tabSelectedTextColor="@color/background_button_orange_normal"
-        app:tabIndicatorColor="@android:color/transparent"
         android:layout_height="35dip">
-
-    </android.support.design.widget.TabLayout>
+        <RelativeLayout
+            android:id="@+id/rl_order_trade"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tv_order_trade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="下单交易"
+                style="@style/text_desc_"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_order_pending"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tv_order_pending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="下单记录"
+                android:layout_centerInParent="true"
+                style="@style/text_desc_"/>
+        </RelativeLayout>
+    </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dip"

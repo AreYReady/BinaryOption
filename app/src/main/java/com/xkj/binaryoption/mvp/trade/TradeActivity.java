@@ -3,13 +3,13 @@ package com.xkj.binaryoption.mvp.trade;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xkj.binaryoption.R;
@@ -19,11 +19,11 @@ import com.xkj.binaryoption.bean.BeanCurrentOrder;
 import com.xkj.binaryoption.mvp.manage.UserManageActivity;
 import com.xkj.binaryoption.mvp.trade.opening.OpenFragment;
 import com.xkj.binaryoption.mvp.trade.pending.PendFragment;
+import com.xkj.binaryoption.widget.BadgeView;
 import com.xkj.binaryoption.widget.NoScrollViewPager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,15 +46,20 @@ public class TradeActivity extends BaseActivity {
     Button mBDeposit;
     @BindView(R.id.b_withdraw)
     Button mBWithdraw;
-    @BindView(R.id.tb_open_or_pend)
-    TabLayout mTbOpenOrPend;
     @BindView(R.id.vp_trade_content)
     NoScrollViewPager mVpTradeContent;
-    public static String ALL_SYMBOLS_DATA="allSymbolsbean";
-    private List<BaseFragment> mFragmentList=new ArrayList<>();
-    private List<String> mStrings=new ArrayList<>();
+    public static String ALL_SYMBOLS_DATA = "allSymbolsbean";
+    @BindView(R.id.tv_order_trade)
+    TextView mTvOrderTrade;
+    @BindView(R.id.rl_order_trade)
+    RelativeLayout mRlOrderTrade;
+    @BindView(R.id.tv_order_pending)
+    TextView mTvOrderPending;
+    @BindView(R.id.rl_order_pending)
+    RelativeLayout mRlOrderPending;
+    private List<BaseFragment> mFragmentList = new ArrayList<>();
     private String allSymbol;
-    private int count=5;
+    private int count = 5;
     private MyPagerAdapter mMyPagerAdapter;
 
 
@@ -79,21 +84,24 @@ public class TradeActivity extends BaseActivity {
     @Override
     protected void initData() {
         allSymbol = getIntent().getStringExtra(ALL_SYMBOLS_DATA);
-        OpenFragment openFragment=new OpenFragment();
-        Bundle bundle=new Bundle();
-        bundle.putString(ALL_SYMBOLS_DATA,allSymbol);
+        OpenFragment openFragment = new OpenFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ALL_SYMBOLS_DATA, allSymbol);
         openFragment.setArguments(bundle);
         mFragmentList.add(openFragment);
         mFragmentList.add(new PendFragment());
-        mStrings.add("下单交易");
-        mStrings.add("持仓记录");
-        mVpTradeContent.setAdapter(mMyPagerAdapter=new MyPagerAdapter(getSupportFragmentManager()));
+        mVpTradeContent.setAdapter(mMyPagerAdapter = new MyPagerAdapter(getSupportFragmentManager()));
         mVpTradeContent.setNoScroll(true);
-        mTbOpenOrPend.setupWithViewPager(mVpTradeContent);
+        mTvOrderTrade.setTextColor(getResources().getColor(R.color.background_button_orange_normal));
+        BadgeView mBadgeView=new BadgeView(mContext);
+        mBadgeView.setTargetView(mTvOrderPending);
+        mBadgeView.setBadgeCount(count);
+//        mTbOpenOrPend.setupWithViewPager(mVpTradeContent);
+
 //        setUpTabBadge();
     }
 
-    @OnClick({R.id.iv_uesr, R.id.b_deposit, R.id.b_withdraw})
+    @OnClick({R.id.iv_uesr, R.id.b_deposit, R.id.b_withdraw,R.id.rl_order_trade, R.id.rl_order_pending})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_uesr:
@@ -102,34 +110,38 @@ public class TradeActivity extends BaseActivity {
             case R.id.b_deposit:
                 break;
             case R.id.b_withdraw:
-               break;
+                break;
+            case R.id.rl_order_trade:
+                mVpTradeContent.setCurrentItem(0);
+                mTvOrderTrade.setTextColor(getResources().getColor(R.color.background_button_orange_normal));
+                mTvOrderPending.setTextColor(getResources().getColor(R.color.text_color_white));
+                break;
+            case R.id.rl_order_pending:
+                mVpTradeContent.setCurrentItem(1);
+                mTvOrderPending.setTextColor(getResources().getColor(R.color.background_button_orange_normal));
+                mTvOrderTrade.setTextColor(getResources().getColor(R.color.text_color_white));
+                break;
         }
     }
 
-    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
-    public void eventCurrentOrder(BeanCurrentOrder beanCurrentOrder){
-//        count=beanCurrentOrder.getOrders()==null?0:beanCurrentOrder.getOrders().size();
+    @Subscribe(sticky = true)
+    public void eventCurrentOrder(BeanCurrentOrder beanCurrentOrder) {
+        count=beanCurrentOrder.getOrders()==null?0:beanCurrentOrder.getOrders().size();
     }
 
-   public class MyPagerAdapter extends FragmentPagerAdapter{
-       public MyPagerAdapter(FragmentManager fm) {
-           super(fm);
-       }
+    public class MyPagerAdapter extends FragmentPagerAdapter {
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
-       @Override
-       public Fragment getItem(int position) {
-           return mFragmentList.get(position);
-       }
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
 
-       @Override
-       public int getCount() {
-           return mFragmentList.size();
-       }
-
-       @Override
-       public CharSequence getPageTitle(int position) {
-
-           return mStrings.get(position);
-       }
-   }
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+    }
 }

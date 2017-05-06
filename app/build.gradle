@@ -38,4 +38,5 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.android.support:design:25.1.0'
+    compile 'cn.bingoogolapple:bga-badgeview:1.1.3'
 }

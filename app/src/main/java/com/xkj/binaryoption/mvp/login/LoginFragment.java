@@ -79,6 +79,7 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
 //        mCetAccount.setText("10001");
 //        mCetPassword.setText("123456a");
         if(ACache.get(mContext).getAsString(MyConstant.IS_REMEMBER)!=null&&ACache.get(mContext).getAsString(MyConstant.IS_REMEMBER).equals("true")){
+            mCbRemember.setChecked(true);
             if(!ACache.get(mContext).getAsString(MyConstant.user_name).isEmpty()){
                 mCetAccount.setText(ACache.get(mContext).getAsString(MyConstant.user_name));
                 mCetPassword.setText(AesEncryptionUtil.decrypt(ACache.get(mContext).getAsString(MyConstant.user_password)));
