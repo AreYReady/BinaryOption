@@ -51,6 +51,7 @@ public class LoginActivity extends BaseActivity {
     public void getMessageLostPassword(MessageLostPassword messageLostPassword){
         addFragment(R.id.fl_index_context,new LostPassFragment());
     }
+//
 
 
 }
