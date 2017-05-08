@@ -10,5 +10,9 @@
             <enum name="INVISIBLE" value="4"/>
             <enum name="VISIBLE" value="0"/>
         </attr>
+        <attr name="inputType" >
+            <enum name="PASSWORD" value="0"/>
+            <enum name="number" value="1"/>
+        </attr>
     </declare-styleable>
 </resources>

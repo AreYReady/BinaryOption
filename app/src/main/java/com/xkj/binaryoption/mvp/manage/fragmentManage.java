@@ -27,12 +27,14 @@ import butterknife.Unbinder;
  * TODO:
  */
 
-public class fragmentManage extends BaseFragment {
+public class FragmentManage extends BaseFragment {
     @BindView(R.id.rv_manager)
     RecyclerView mRvManager;
     Unbinder unbinder;
     private List<BeanManages> mBeanManagesList;
     private ManagerAdapter mManagerAdapter;
+    private ManagerAdapter.OnItemClickListener mOnItemClickListener;
+    private String[] mItemString;
 
     @Nullable
     @Override
@@ -54,15 +56,16 @@ public class fragmentManage extends BaseFragment {
 
     @Override
     protected void initData() {
+        mItemString=mContext.getResources().getStringArray(R.array.item_names);
         mBeanManagesList = new ArrayList<>();
-        mBeanManagesList.add(new BeanManages("下单交易",R.mipmap.info01,"持仓记录",R.mipmap.info02));
-        mBeanManagesList.add(new BeanManages("预存资金",R.mipmap.info03,"提取资金",R.mipmap.info04));
-        mBeanManagesList.add(new BeanManages("绑定微信",R.mipmap.info05));
-        mBeanManagesList.add(new BeanManages("分享",R.mipmap.info06));
-        mBeanManagesList.add(new BeanManages("个人资料",R.mipmap.info07));
-        mBeanManagesList.add(new BeanManages("新手教程",R.mipmap.info08));
-        mBeanManagesList.add(new BeanManages("实名认证",R.mipmap.info09));
-        mBeanManagesList.add(new BeanManages("退出登录",R.mipmap.info10));
+        mBeanManagesList.add(new BeanManages(mItemString[0],R.mipmap.info01,mItemString[1],R.mipmap.info02));
+        mBeanManagesList.add(new BeanManages(mItemString[2],R.mipmap.info03,mItemString[3],R.mipmap.info04));
+        mBeanManagesList.add(new BeanManages(mItemString[4],R.mipmap.info05));
+        mBeanManagesList.add(new BeanManages(mItemString[5],R.mipmap.info06));
+        mBeanManagesList.add(new BeanManages(mItemString[6],R.mipmap.info07));
+        mBeanManagesList.add(new BeanManages(mItemString[7],R.mipmap.info08));
+        mBeanManagesList.add(new BeanManages(mItemString[8],R.mipmap.info09));
+        mBeanManagesList.add(new BeanManages(mItemString[9],R.mipmap.info10));
         mRvManager.setAdapter(mManagerAdapter=new ManagerAdapter(mContext, mBeanManagesList));
         mRvManager.setLayoutManager(new LinearLayoutManager(mContext));
         mRvManager.addItemDecoration(new DividerItemDecoration(mContext,
@@ -71,7 +74,9 @@ public class fragmentManage extends BaseFragment {
             @Override
             public void onClick(int position, String desc) {
                 Log.i(TAG, "onClick: "+desc);
-
+                if(mOnItemClickListener!=null){
+                    mOnItemClickListener.onClick(position,desc);
+                }
             }
         });
     }
@@ -80,5 +85,8 @@ public class fragmentManage extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+    public void setOnItemClickListener(ManagerAdapter.OnItemClickListener onItemClickListener){
+        this.mOnItemClickListener=onItemClickListener;
     }
 }

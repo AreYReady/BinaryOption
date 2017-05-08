@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.xkj.binaryoption.adapter.CurrentOrderAdapter;
 import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.bean.BeanCurrentOrder;
 import com.xkj.binaryoption.bean.BeanOrderResult;
+import com.xkj.binaryoption.bean.RealTimeDataList;
 import com.xkj.binaryoption.utils.ThreadHelper;
 import com.xkj.binaryoption.widget.DividerItemDecoration;
 
@@ -134,7 +136,20 @@ public class CurrentFragment extends BaseFragment {
             }
         }
     }
-
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void eventRealTimePrice(RealTimeDataList realTimeDataList){
+        if(mBeanCurrentOrder!=null||mBeanCurrentOrder.getOrders()!=null||mBeanCurrentOrder.getOrders().size()!=0) {
+            for(int i=0;i<mBeanCurrentOrder.getOrders().size();i++){
+                BeanCurrentOrder.OrdersBean ordersBean = mBeanCurrentOrder.getOrders().get(i);
+                for (RealTimeDataList.BeanRealTime realTimeData : realTimeDataList.getQuotes()) {
+                    if(ordersBean.getSymbol().equals(realTimeData.getSymbol())){
+                        Log.i(TAG, "eventRealTimePrice: "+realTimeData.getBid());
+                        ordersBean.setClose_price(String.valueOf(realTimeData.getBid()));
+                    }
+                }
+            }
+        }
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

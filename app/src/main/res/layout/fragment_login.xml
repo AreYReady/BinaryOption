@@ -16,12 +16,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@mipmap/logo"/>
+        android:src="@mipmap/icon"/>
     <com.xkj.binaryoption.widget.CustomEditText
         android:id="@+id/cet_account"
         android:layout_marginTop="35dip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        customEditText:inputType="number"
         customEditText:hint="请输入手机号码"
         customEditText:signImage="@mipmap/phone1"
         />
@@ -30,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         customEditText:hint="请输入密码"
+        customEditText:inputType="PASSWORD"
         customEditText:signImage="@mipmap/pwd1"
         />
     <Button

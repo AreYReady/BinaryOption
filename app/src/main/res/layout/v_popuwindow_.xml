@@ -118,12 +118,7 @@
             android:layout_marginBottom="@dimen/space_big"
             android:gravity="center_vertical"
             android:text="时间周期（单位秒）："/>
-               <RadioGroup
-                   android:id="@+id/rg_time_period"
-                   android:layout_width="match_parent"
-                   android:orientation="horizontal"
-                   android:layout_height="wrap_content">
-               </RadioGroup>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_time_period"
                 android:layout_width="match_parent"

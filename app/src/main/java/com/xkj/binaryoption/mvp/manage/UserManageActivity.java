@@ -11,6 +11,12 @@ import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.adapter.ManagerAdapter;
 import com.xkj.binaryoption.base.BaseActivity;
 import com.xkj.binaryoption.bean.BeanManages;
+import com.xkj.binaryoption.bean.BeanUserInfo;
+import com.xkj.binaryoption.message.MessageManageItem;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -36,6 +42,8 @@ public class UserManageActivity extends BaseActivity {
     LinearLayout mLlUserManager;
     private ManagerAdapter mManagerAdapter;
     private List<BeanManages> mBeanManagesList;
+    private String[] mItemStrings;
+    private BeanUserInfo mBeanUserInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,16 +54,65 @@ public class UserManageActivity extends BaseActivity {
 
     @Override
     public void initRegister() {
-
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void initView() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_index_context, new fragmentManage()).commit();
+        FragmentManage fragmentManage;
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_index_context,fragmentManage= new FragmentManage()).commit();
+        fragmentManage.setOnItemClickListener(new ManagerAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(int position, String desc) {
+                checkDescAction(desc);
+            }
+        });
     }
 
+    /**
+     * 处理点击事件响应
+     * @param desc
+     */
+    private void checkDescAction(String desc) {
+        switch (desc){
+            case "下单交易":
+            case "持仓记录":
+                EventBus.getDefault().post(new MessageManageItem(desc));
+                finish();
+                break;
+            case "预存资金":
+                break;
+            case "提取资金":
+                break;
+            case "绑定微信":
+                break;
+            case "分享":
+                break;
+            case "个人资料":
+                break;
+            case "新手教程":
+                break;
+            case "实名认证":
+                break;
+            case "退出登录":
+                break;
+        }
+    }
+
+    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
+    public void eventUserInfo(BeanUserInfo beanUserInfo){
+        mBeanUserInfo=beanUserInfo;
+        if(mTvLogin!=null){
+            mTvLogin.setText(beanUserInfo.getLogin());
+        }
+    }
     @Override
     protected void initData() {
+
+        mItemStrings=getResources().getStringArray(R.array.item_names);
+        if(mBeanUserInfo!=null){
+            mTvLogin.setText(String.valueOf(mBeanUserInfo.getLogin()));
+        }
     }
 
     @OnClick({R.id.ll_index, R.id.ll_user_manager})

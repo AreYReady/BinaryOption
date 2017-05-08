@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 style="@style/text_desc_small_xx"
                 android:layout_height="wrap_content"
-                android:text="0.845454"/>
+               />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"

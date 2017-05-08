@@ -58,11 +58,11 @@ public class SymbolsTagAdapter extends RecyclerView.Adapter<SymbolsTagAdapter.My
                     case "amount":
                         holder.mTvSymbolAmount.setText(mBeanSymbolTags.get(position).getAmount());
                         if (mBeanSymbolTags.get(position).getUpOrDown()) {
-                            holder.mTvSymbolAmount.setTextColor(Color.RED);
+                            holder.mTvSymbolAmount.setTextColor(mContext.getResources().getColor(R.color.text_color_price_rise));
                             holder.mIvSymbolIcon.setImageResource(R.mipmap.red);
                         } else {
                             holder.mIvSymbolIcon.setImageResource(R.mipmap.green);
-                            holder.mTvSymbolAmount.setTextColor(Color.GREEN);
+                            holder.mTvSymbolAmount.setTextColor(mContext.getResources().getColor(R.color.text_color_price_fall));
                         }
                         break;
                     case "background":

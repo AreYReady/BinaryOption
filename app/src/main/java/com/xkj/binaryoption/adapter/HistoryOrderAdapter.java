@@ -35,6 +35,9 @@ public class HistoryOrderAdapter extends RecyclerView.Adapter<HistoryOrderAdapte
         HistoryHolder viewHolder = new HistoryHolder(LayoutInflater.from(mContext).inflate(R.layout.rv_history_pending, parent, false));
         return viewHolder;
     }
+    public void setData(BeanHistoryOrder beanHistoryOrder){
+        this.mBeanHistoryOrder=beanHistoryOrder;
+    }
 
     @Override
     public void onBindViewHolder(HistoryHolder holder, int position) {

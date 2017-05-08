@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,8 +44,6 @@ import butterknife.OnClick;
 public class CustomPopupWindow extends PopupWindow {
     @BindView(R.id.tv_action_title)
     TextView mTvActionTitle;
-    @BindView(R.id.rg_time_period)
-    RadioGroup mRgTimePeriod;
     @BindView(R.id.tv_current_price)
     TextView mTvCurrentPrice;
     @BindView(R.id.tv_expect_profit)
@@ -146,27 +143,28 @@ public class CustomPopupWindow extends PopupWindow {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                checkMoney(editable.toString());
+                checkMoney(editable.toString().toString());
+
+
             }
         });
         amount = mBButton1.getText().toString();
         changeProfit();
 
         mTvCurrentPrice.setText(currentPrice);
-        mRgTimePeriod.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                percent = (int) radioGroup.findViewById(i).getTag(R.id.tag_first);
-                cycle = (int) radioGroup.findViewById(i).getTag(R.id.tag_second);
-                Log.i(TAG, "onCheckedChanged: " + amount);
-                changeProfit();
-            }
-        });
+//        mRgTimePeriod.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+//                percent = (int) radioGroup.findViewById(i).getTag(R.id.tag_first);
+//                cycle = (int) radioGroup.findViewById(i).getTag(R.id.tag_second);
+//                Log.i(TAG, "onCheckedChanged: " + amount);
+//                changeProfit();
+//            }
+//        });
         mBEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,6 +181,7 @@ public class CustomPopupWindow extends PopupWindow {
     }
 
     private void checkMoney(String amount) {
+        this.amount=amount;
         for(Button button:mButtonList){
             if(button.getText().equals(amount)){
                 button.setSelected(true);

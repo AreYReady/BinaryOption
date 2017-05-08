@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ public class CustomEditText extends FrameLayout {
     private Bitmap icon;
     private boolean selectStyle=false;
     private int checkCode=GONE;
+    private int inputType=-1;
 
     public CustomEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -63,12 +65,19 @@ public class CustomEditText extends FrameLayout {
                     break;
                 case R.styleable.CustomEditText_checkCode:
                     checkCode=typedArray.getInt(R.styleable.CustomEditText_checkCode,GONE);
+                case R.styleable.CustomEditText_inputType:
+                    inputType=typedArray.getInt(R.styleable.CustomEditText_inputType,-1);
             }
         }
         typedArray.recycle();
         View inflate = LayoutInflater.from(context).inflate(R.layout.v_edittext, this);
         mLlEditTextParent=(LinearLayout)inflate.findViewById(R.id.ll_edit_text_parent);
         mEtEditText=(EditText)inflate.findViewById(R.id.et_edit_text);
+        if(inputType==0){
+            mEtEditText.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }else if(inputType==1){
+            mEtEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        }
         mIvEditTextIcon=(ImageView)inflate.findViewById(R.id.iv_edit_text_icon);
         mTvPrompt=(TextView)inflate.findViewById(R.id.tv_prompt);
         mTvCheckCode=(TextView)inflate.findViewById(R.id.tv_check_code);

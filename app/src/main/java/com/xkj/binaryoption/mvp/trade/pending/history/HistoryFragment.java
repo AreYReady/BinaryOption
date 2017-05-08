@@ -2,7 +2,6 @@ package com.xkj.binaryoption.mvp.trade.pending.history;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,7 @@ import com.xkj.binaryoption.bean.BeanHistoryOrder;
 import com.xkj.binaryoption.bean.BeanOrderResult;
 import com.xkj.binaryoption.utils.ThreadHelper;
 import com.xkj.binaryoption.widget.DividerItemDecoration;
+import com.xkj.binaryoption.widget.WrapContentLinearLayoutManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -54,9 +54,8 @@ public class HistoryFragment extends BaseFragment {
 
     private void initRv() {
         mRvHistoryInfo.setAdapter(mHistoryOrderAdapter=new HistoryOrderAdapter(mContext,mBeanHistoryOrder));
-        mRvHistoryInfo.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvHistoryInfo.setLayoutManager(new WrapContentLinearLayoutManager(mContext));
         mRvHistoryInfo.addItemDecoration(new DividerItemDecoration(mContext,
-
                 DividerItemDecoration.VERTICAL_LIST));
     }
 
@@ -78,7 +77,14 @@ public class HistoryFragment extends BaseFragment {
     }
     @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
     public void EventHistoryOrder(BeanHistoryOrder beanHistoryOrder){
-        mBeanHistoryOrder=beanHistoryOrder;
+        //把倒序的数据排正
+        mBeanHistoryOrder=new BeanHistoryOrder();
+        mBeanHistoryOrder.setCount(beanHistoryOrder.getCount());
+        mBeanHistoryOrder.setMsg_type(beanHistoryOrder.getMsg_type());
+        mBeanHistoryOrder.setItems(new ArrayList<BeanHistoryOrder.ItemsBean>());
+        for(int i=beanHistoryOrder.getCount()-1;i>=0;i--){
+            mBeanHistoryOrder.getItems().add(beanHistoryOrder.getItems().get(i));
+        }
     }
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void eventOrderResult (BeanOrderResult beanOrderResult){
@@ -104,7 +110,10 @@ public class HistoryFragment extends BaseFragment {
                 public void run() {
                     mBeanHistoryOrder.getItems().add(0,itemsBean);
                     if(mHistoryOrderAdapter!=null){
+                        mHistoryOrderAdapter.setData(mBeanHistoryOrder);
                         mHistoryOrderAdapter.notifyItemInserted(0);
+                        mHistoryOrderAdapter.notifyItemRangeChanged(0,mBeanHistoryOrder.getCount());
+//                        mRvHistoryInfo.smoothScrollToPosition(0);
                     }
                 }
             });

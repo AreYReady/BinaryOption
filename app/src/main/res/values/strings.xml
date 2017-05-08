@@ -2,4 +2,16 @@
     <string name="app_name">BinaryOption</string>
         <item type="id" name="tag_first"></item>
         <item type="id" name="tag_second"></item>
+    <string-array name="item_names">
+        <item>下单交易</item>
+        <item>持仓记录</item>
+        <item>预存资金</item>
+        <item>提取资金</item>
+        <item>绑定微信</item>
+        <item>分享</item>
+        <item>个人资料</item>
+        <item>新手教程</item>
+        <item>实名认证</item>
+        <item>退出登录</item>
+    </string-array>
 </resources>

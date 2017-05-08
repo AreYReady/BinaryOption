@@ -136,12 +136,13 @@ public class CustomKLink extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mBeanHistoryPrices != null) {
+        if (mBeanHistoryPrices != null&&mBeanHistoryPrices.getItems()!=null) {
             decodeData();
             drawRect(canvas);
             drawText(canvas);
             if (mBeanRaRealTimePrice != null && mBeanRaRealTimePrice.getSymbol().equals(mBeanHistoryPrices.getSymbol()))
                 drawRealTime(canvas);
+        }else{
         }
 
     }
@@ -376,7 +377,7 @@ public class CustomKLink extends View {
      * @return
      */
     public BeanShowPrices getBeanShowPrices(float x) {
-        if (mBeanHistoryPrices == null) {
+        if (mBeanHistoryPrices == null||mBeanHistoryPrices.getItems()==null) {
             return null;
         }
         BeanShowPrices beanShowPrices = new BeanShowPrices();
@@ -387,8 +388,8 @@ public class CustomKLink extends View {
             }else {
                 index = Double.valueOf(BigdecimalUtils.div(String.valueOf(x), mWidthUnit, 0)).intValue();
             }
-            String[] split = mBeanHistoryPrices.getItems().get(index + begin).getO().split("\\|");
-            beanShowPrices.setTime(DateUtils.getShowTimeNoTimeZone((long)mBeanHistoryPrices.getItems().get(index+begin).getT()*1000));
+            String[] split = mBeanHistoryPrices.getItems().get(index + begin>=mBeanHistoryPrices.getCount()?mBeanHistoryPrices.getCount()-1:index+begin).getO().split("\\|");
+            beanShowPrices.setTime(DateUtils.getShowTimeNoTimeZone((long)mBeanHistoryPrices.getItems().get(index + begin>=mBeanHistoryPrices.getCount()?mBeanHistoryPrices.getCount()-1:index+begin).getT()*1000));
             beanShowPrices.setOpenPrice(split[0]);
             beanShowPrices.setMaxPrice(BigdecimalUtils.add(split[0], split[1]));
             beanShowPrices.setMinPrices(BigdecimalUtils.add(split[0], split[2]));

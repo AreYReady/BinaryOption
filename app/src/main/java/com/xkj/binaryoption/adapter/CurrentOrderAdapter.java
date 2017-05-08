@@ -47,6 +47,7 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
         holder.mTvSymbol.setText(ordersBean.getSymbol());
         holder.mPbProgressbar.setMax(ordersBean.getTime_span());
         holder.mTvProgress.setText(ordersBean.getLeft_time()/1000+"/"+ordersBean.getTime_span());
+        holder.mTvCurrentPrice.setText(ordersBean.getClose_price());
         holder.mPbProgressbar.setProgress(ordersBean.getLeft_time()/1000);
         if(ordersBean.getDirection()==0){
             holder.mIvFlag.setImageResource(R.mipmap.green);
