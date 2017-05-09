@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
 import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.utils.SystemUtil;
 
 import org.greenrobot.eventbus.EventBus;
+
+import static com.xiasuhuei321.loadingdialog.view.LoadingDialog.Speed.SPEED_TWO;
 
 /**
  * Created by huangsc on 2017-04-17.
@@ -97,5 +100,31 @@ protected View view;
     public void dissPopupWindos(){
         popupWindowLoading.dismiss();
         popupWindowLoading=null;
+    }
+    LoadingDialog loadingDialog;
+    public void showDialogLoading(){
+        if(loadingDialog==null) {
+            loadingDialog = new LoadingDialog(mContext);
+            loadingDialog.setLoadingText("加载中")
+                    //显示加载成功时的文字
+                    .setInterceptBack(false)
+                    .setLoadSpeed(SPEED_TWO)
+                    .show();
+        }
+    }
+    public void showSucc(String success){
+        if(loadingDialog!=null){
+            loadingDialog.setSuccessText(success);
+            loadingDialog.loadSuccess();
+            loadingDialog.close();
+            loadingDialog=null;
+        }
+    }
+    public void showfaild(String failedString){
+        if (loadingDialog!=null){
+            loadingDialog.setFailedText(failedString);
+            loadingDialog.loadFailed();
+            loadingDialog=null;
+        }
     }
 }

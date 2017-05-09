@@ -42,7 +42,7 @@ public class HistoryOrderAdapter extends RecyclerView.Adapter<HistoryOrderAdapte
     @Override
     public void onBindViewHolder(HistoryHolder holder, int position) {
 //        BeanOrderResult beanOrderResult = mBeanHistoryOrder.getItems().get(position);
-        BeanHistoryOrder.ItemsBean itemsBean=mBeanHistoryOrder.getItems().get(position);
+        BeanHistoryOrder.ItemsBean itemsBean=mBeanHistoryOrder.getItems().get(mBeanHistoryOrder.getCount()-position-1);
         holder.mTvClosePrice.setText(String.valueOf(itemsBean.getClose_price()));
         holder.mTvBuyPrice.setText(String.valueOf(itemsBean.getOpen_price()));
         holder.mTvAmountAcount.setText(String.valueOf(itemsBean.getMoney()));

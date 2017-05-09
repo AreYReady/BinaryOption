@@ -120,7 +120,9 @@ public class CustomPopupWindow extends PopupWindow {
             mTimePeriodAdapter.setOnClickListener(new TimePeriodAdapter.OnClickListener() {
                 @Override
                 public void onClick(int position) {
+                    cycle=symbolsBean.getCycles().get(position).getCycle();
                     percent=symbolsBean.getCycles().get(position).getPercent();
+                    changeProfit();
                     mTimePeriodAdapter.notifyDataSetChanged();
                 }
             });
@@ -135,6 +137,9 @@ public class CustomPopupWindow extends PopupWindow {
                 return true;
             }
         });
+        amount = mBButton1.getText().toString();
+        mEtMoney.setText(amount);
+        changeProfit();
         mEtMoney.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -147,29 +152,23 @@ public class CustomPopupWindow extends PopupWindow {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if(editable.toString().equals("")){
+                    amount="0";
+                }
                 checkMoney(editable.toString().toString());
-
-
             }
         });
-        amount = mBButton1.getText().toString();
-        changeProfit();
 
         mTvCurrentPrice.setText(currentPrice);
-//        mRgTimePeriod.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-//                percent = (int) radioGroup.findViewById(i).getTag(R.id.tag_first);
-//                cycle = (int) radioGroup.findViewById(i).getTag(R.id.tag_second);
-//                Log.i(TAG, "onCheckedChanged: " + amount);
-//                changeProfit();
-//            }
-//        });
         mBEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (symbolsBean.getCycles() == null) {
                     Toast.makeText(context, "当前该种类不能交易", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(amount.equals("")||amount.equals("0")){
+                    Toast.makeText(context, "交易金额不能为空", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 //发送订单
@@ -178,6 +177,7 @@ public class CustomPopupWindow extends PopupWindow {
                         , Integer.valueOf(amount), cycle, percent));
             }
         });
+
     }
 
     private void checkMoney(String amount) {
@@ -189,6 +189,7 @@ public class CustomPopupWindow extends PopupWindow {
                 button.setSelected(false);
             }
         }
+        changeProfit();
     }
 
     /**
@@ -197,7 +198,15 @@ public class CustomPopupWindow extends PopupWindow {
     private void changeProfit() {
         ThreadHelper.instance().runOnUiThread(runnable);
     }
-
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            mTvCurrentPrice.setText(currentPrice);
+            if (mSymbolsBean.getCycles() != null) {
+                mTvExpectProfit.setText((int) (Double.valueOf(amount) * percent / 100) + "元");
+            }
+        }
+    };
     @Subscribe
     public void eventRealTimeData(RealTimeDataList realTimeDataList) {
         for (RealTimeDataList.BeanRealTime beanRealTime : realTimeDataList.getQuotes()) {
@@ -208,16 +217,7 @@ public class CustomPopupWindow extends PopupWindow {
         }
     }
 
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            mTvCurrentPrice.setText(currentPrice);
-            if (mSymbolsBean.getCycles() != null) {
-                mTvExpectProfit.setText((int) (Double.valueOf(amount) * percent / 100) + "元");
-            }
-            mEtMoney.setText(amount);
-        }
-    };
+
 
     @Override
     public void dismiss() {
@@ -252,6 +252,6 @@ public class CustomPopupWindow extends PopupWindow {
         }
         amount = ((Button) view).getText().toString();
         Log.i(TAG, "onCheckedChanged: " + amount);
-        changeProfit();
+         mEtMoney.setText(amount);
     }
 }

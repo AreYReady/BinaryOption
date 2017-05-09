@@ -78,13 +78,17 @@ public class HistoryFragment extends BaseFragment {
     @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
     public void EventHistoryOrder(BeanHistoryOrder beanHistoryOrder){
         //把倒序的数据排正
-        mBeanHistoryOrder=new BeanHistoryOrder();
-        mBeanHistoryOrder.setCount(beanHistoryOrder.getCount());
-        mBeanHistoryOrder.setMsg_type(beanHistoryOrder.getMsg_type());
-        mBeanHistoryOrder.setItems(new ArrayList<BeanHistoryOrder.ItemsBean>());
-        for(int i=beanHistoryOrder.getCount()-1;i>=0;i--){
-            mBeanHistoryOrder.getItems().add(beanHistoryOrder.getItems().get(i));
+        mBeanHistoryOrder=beanHistoryOrder;
+        if(mHistoryOrderAdapter!=null){
+            mHistoryOrderAdapter.setData(mBeanHistoryOrder);
+            mHistoryOrderAdapter.notifyDataSetChanged();
         }
+//        mBeanHistoryOrder.setCount(beanHistoryOrder.getCount());
+//        mBeanHistoryOrder.setMsg_type(beanHistoryOrder.getMsg_type());
+//        mBeanHistoryOrder.setItems(new ArrayList<BeanHistoryOrder.ItemsBean>());
+//        for(int i=beanHistoryOrder.getCount()-1;i>=0;i--){
+//            mBeanHistoryOrder.getItems().add(beanHistoryOrder.getItems().get(i));
+//        }
     }
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void eventOrderResult (BeanOrderResult beanOrderResult){
@@ -108,7 +112,7 @@ public class HistoryFragment extends BaseFragment {
             ThreadHelper.instance().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mBeanHistoryOrder.getItems().add(0,itemsBean);
+                    mBeanHistoryOrder.getItems().add(mBeanHistoryOrder.getCount(),itemsBean);
                     if(mHistoryOrderAdapter!=null){
                         mHistoryOrderAdapter.setData(mBeanHistoryOrder);
                         mHistoryOrderAdapter.notifyItemInserted(0);

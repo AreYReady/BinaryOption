@@ -60,18 +60,19 @@ public class CurrentFragment extends BaseFragment {
     }
 
     private void countdown() {
+
         cdt = new CountDownTimer(Integer.MAX_VALUE, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 if(mBeanCurrentOrder.getOrders()==null||mBeanCurrentOrder.getOrders().size()==0){
                     return;
                 }
+                for(int i=0;i<mBeanCurrentOrder.getOrders().size();i++){
+                    mBeanCurrentOrder.getOrders().get(i).setLeft_time(mBeanCurrentOrder.getOrders().get(i).getLeft_time()-1000>0?mBeanCurrentOrder.getOrders().get(i).getLeft_time()-1000:0);
+                }
                 ThreadHelper.instance().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        for(int i=0;i<mBeanCurrentOrder.getOrders().size();i++){
-                            mBeanCurrentOrder.getOrders().get(i).setLeft_time(mBeanCurrentOrder.getOrders().get(i).getLeft_time()-1000);
-                        }
                         mCurrentOrderAdapter.notifyDataSetChanged();
                     }
                 });
@@ -97,13 +98,25 @@ public class CurrentFragment extends BaseFragment {
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void eventCurrentOrder(BeanCurrentOrder beanCurrentOrder) {
         mBeanCurrentOrder = beanCurrentOrder;
+        if(mCurrentOrderAdapter!=null){
+            Log.i(TAG, "eventCurrentOrder: ");
+            mCurrentOrderAdapter.setData(mBeanCurrentOrder);
+            mCurrentOrderAdapter.notifyDataSetChanged();
+        }
     }
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void eventOrderResult(BeanOrderResult beanOrderResult){
+
         if(beanOrderResult.getStatus()==0){
             //订单开始
+
             if(mBeanCurrentOrder.getOrders()==null){
                 mBeanCurrentOrder.setOrders(new ArrayList<BeanCurrentOrder.OrdersBean>());
+            }
+            for(int i=0;i<mBeanCurrentOrder.getOrders().size();i++){
+                if(mBeanCurrentOrder.getOrders().get(i).getTicket()==beanOrderResult.getTicket()){
+                    return;
+                }
             }
             BeanCurrentOrder.OrdersBean ordersBean=new BeanCurrentOrder.OrdersBean();
             ordersBean.setLeft_time(beanOrderResult.getTime_span()*1000);
@@ -131,14 +144,13 @@ public class CurrentFragment extends BaseFragment {
                             mBeanCurrentOrder.getOrders().remove(finalI);
                         }
                     });
-                    break;
                 }
             }
         }
     }
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void eventRealTimePrice(RealTimeDataList realTimeDataList){
-        if(mBeanCurrentOrder!=null||mBeanCurrentOrder.getOrders()!=null||mBeanCurrentOrder.getOrders().size()!=0) {
+        if(mBeanCurrentOrder!=null&&mBeanCurrentOrder.getOrders()!=null&&mBeanCurrentOrder.getOrders().size()!=0) {
             for(int i=0;i<mBeanCurrentOrder.getOrders().size();i++){
                 BeanCurrentOrder.OrdersBean ordersBean = mBeanCurrentOrder.getOrders().get(i);
                 for (RealTimeDataList.BeanRealTime realTimeData : realTimeDataList.getQuotes()) {

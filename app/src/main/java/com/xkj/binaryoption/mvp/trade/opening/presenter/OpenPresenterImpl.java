@@ -9,6 +9,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.xkj.binaryoption.bean.BeanHistoryRequest;
 import com.xkj.binaryoption.bean.BeanOrderRequest;
+import com.xkj.binaryoption.bean.BeanSymbolConfig;
 import com.xkj.binaryoption.bean.EventBusAllSymbol;
 import com.xkj.binaryoption.bean.RealTimeDataList;
 import com.xkj.binaryoption.constant.MessageType;
@@ -84,16 +85,12 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
         message.obj = (data);
         mHandler.sendMessage(message);
     }
-    @Subscribe(sticky = true)
+    @Subscribe(sticky = true ,priority = 100)
     public void getHandler(Handler handler){
         Log.i(TAG, "getHandler: ");
         mHandler=handler;
     }
 
-    @Subscribe
-    public void eventOrderRequest(BeanOrderRequest beanOrderRequest){
-        sendMessageToServer( new Gson().toJson(beanOrderRequest));
-    }
 
     /**
      * 接受所有商品产数
@@ -104,9 +101,25 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
         ArrayMap<String, Integer> map=new ArrayMap<>();
         for(EventBusAllSymbol.ItemSymbol itemSymbol:eventBusAllSymbol.getItems()){
             map.put(itemSymbol.getSymbol(),itemSymbol.getDigits());
+
         }
       mView.eventAllSymbolsData(map);
   }
+
+    /**
+     * 所有要展示的
+     * @param beanSymbolConfig
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void eventAllSubSymbolData(BeanSymbolConfig beanSymbolConfig){
+        if(beanSymbolConfig.getCount()==0){
+            return;
+        }
+        for(BeanSymbolConfig.SymbolsBean symbolsBean:beanSymbolConfig.getSymbols()){
+            sendSubSymbol(symbolsBean.getSymbol());
+        }
+
+    }
     public void setCurrentSymbol(String currentSymbol){
         mCurrentSymbol=currentSymbol;
     }
@@ -114,6 +127,11 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
     @Override
     public void sendHistoryPrices(BeanHistoryRequest beanHistoryRequest) {
         sendMessageToServer(new Gson().toJson(beanHistoryRequest));
+    }
+
+    @Override
+    public void sendOrderRequest(BeanOrderRequest beanOrderRequest) {
+        sendMessageToServer(new Gson().toJson(beanOrderRequest));
     }
 
 

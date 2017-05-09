@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.CountDownTimer;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xkj.binaryoption.R;
+import com.xkj.binaryoption.utils.ThreadHelper;
 
 /**
  * Created by huangsc on 2017-04-17.
@@ -85,6 +87,17 @@ public class CustomEditText extends FrameLayout {
         mEtEditText.setHint(hint);
         mLlEditTextParent.setSelected(selectStyle);
         mTvCheckCode.setVisibility(checkCode);
+        //验证码倒计时
+        mTvCheckCode.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mTvCheckCode.setClickable(false);
+                countdown();
+                if(mOnClickCheckCodeListener!=null&&mTvCheckCode.isClickable()){
+                    mOnClickCheckCodeListener.onClick(view);
+                }
+            }
+        });
     }
     public void setPromptVisibility(int visibility){
         mTvPrompt.setVisibility(visibility);
@@ -92,13 +105,43 @@ public class CustomEditText extends FrameLayout {
     public void setPromptText(String desc){
         mTvPrompt.setText(desc);
     }
-    public TextView getCheckCode(){
-        return mTvCheckCode;
-    }
     public void setText(String desc){
         mEtEditText.setText(desc);
     }
     public String getText(){
         return mEtEditText.getText().toString();
+    }
+    CountDownTimer cdt;
+    int counDownTime=0;
+    private void countdown() {
+        counDownTime=60;
+        cdt = new CountDownTimer(62*1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                ThreadHelper.instance().runOnUiThread(runOnUiThread);
+            }
+            @Override
+                public void onFinish() {
+                mTvCheckCode.setClickable(true);
+                ThreadHelper.instance().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTvCheckCode.setText("获取验证码");
+                    }
+                });
+            }
+        };
+        cdt.start();
+    }
+
+    Runnable runOnUiThread=new Runnable() {
+        @Override
+        public void run() {
+            mTvCheckCode.setText("剩余"+counDownTime--+"秒");
+        }
+    };
+    public OnClickListener mOnClickCheckCodeListener;
+    public void setOnClickCheckCodeListener(OnClickListener onClickCheckCodeListener){
+        mOnClickCheckCodeListener=onClickCheckCodeListener;
     }
 }

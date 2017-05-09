@@ -25,6 +25,7 @@ import com.xkj.binaryoption.adapter.SymbolsTagAdapter;
 import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.bean.BeanHistoryPrices;
 import com.xkj.binaryoption.bean.BeanHistoryRequest;
+import com.xkj.binaryoption.bean.BeanOrderRequest;
 import com.xkj.binaryoption.bean.BeanOrderResponse;
 import com.xkj.binaryoption.bean.BeanShowPrices;
 import com.xkj.binaryoption.bean.BeanSymbolConfig;
@@ -440,7 +441,14 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
         this.mAllSymbolsDigits = mAllSymbolsDigits;
     }
 
-
+    @Subscribe
+    public void eventOrderRequest(BeanOrderRequest beanOrderRequest){
+        if (customPopupWindow != null) {
+            customPopupWindow.dismiss();
+            customPopupWindow = null;
+        }
+        mPresenter.sendOrderRequest(beanOrderRequest);
+    }
     /**
      * 下单结果
      */
@@ -448,10 +456,6 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     public void eventOrderResponse(BeanOrderResponse beanOrderResponse) {
         if (beanOrderResponse.getResult_code() == 0) {
             ToashUtil.showShort(mContext, "下单成功");
-            if (customPopupWindow != null) {
-                customPopupWindow.dismiss();
-                customPopupWindow = null;
-            }
         } else {
             ToashUtil.showShort(mContext, "下单失败，请重新");
         }

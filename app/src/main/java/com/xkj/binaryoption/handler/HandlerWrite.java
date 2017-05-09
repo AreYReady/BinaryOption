@@ -40,7 +40,7 @@ public class HandlerWrite extends Handler {
                 response = mSSLSocketChannel.receive();
                 Log.i(TAG, "doLogin: Response received: " + response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             try {
                 mSSLSocketChannel.close();

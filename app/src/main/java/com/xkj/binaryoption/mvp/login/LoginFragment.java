@@ -112,7 +112,8 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
                         mPreListener.doLogin(mCetAccount.getText(), AesEncryptionUtil.encrypt(mCetPassword.getText()));
                     }
                 });
-                showPopupLoading(mActivityLogin);
+//                showPopupLoading(mActivityLogin);
+                showDialogLoading();
                 break;
             case R.id.b_sign_up:
                 EventBus.getDefault().post(new MessageSignUp());
@@ -125,9 +126,8 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTimeOut(String timeout) {
         if (timeout.equalsIgnoreCase(SSLSocketChannel.TIMEOUT)) {
-            if (popupWindowLoading != null)
-                popupWindowLoading.dismiss();
-            showToast("服务超时");
+//            showToast("服务超时");
+            showfaild("服务超时");
 //            btnLogin.setEnabled(true);
         }
     }
@@ -140,15 +140,16 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
             ACache.get(mContext).put(MyConstant.user_name,mCetAccount.getText().toString());
             ACache.get(mContext).put(MyConstant.user_password,AesEncryptionUtil.encrypt(mCetPassword.getText().toString()));
             ACache.get(mContext).put(MyConstant.IS_REMEMBER,mCbRemember.isChecked()?"true":"false");
+            showSucc("登入成功");
         } else {
             if(code==-100){//服务器出错，超时等
+                showfaild("网路或者服务器出错了，请稍后重试");
                 showToast("网路或者服务器出错了，请稍后重试");
             }else {
                 showToast("用户名或者密码错误，请重试");
+                showfaild("用户名或者密码错误，请重试");
             }
-            if (popupWindowLoading != null) {
-                popupWindowLoading.dismiss();
-            }
+
 //            mBLogin.setEnabled(true);
         }
     }

@@ -32,6 +32,9 @@ public class CurrentOrderAdapter extends RecyclerView.Adapter<CurrentOrderAdapte
         mContext = context;
     }
 
+    public void setData(BeanCurrentOrder beanCurrentOrder){
+        this.mBeanCurrentOrder=beanCurrentOrder;
+    }
     @Override
     public CurrentHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CurrentHolder viewHolder = new CurrentHolder(LayoutInflater.from(mContext).inflate(R.layout.rv_current_order_pending, parent, false));

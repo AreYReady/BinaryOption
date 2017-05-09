@@ -51,7 +51,7 @@ public class SignUpFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        mCetCheck.getCheckCode().setOnClickListener(new View.OnClickListener() {
+        mCetCheck.setOnClickCheckCodeListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(mContext,"hh",Toast.LENGTH_SHORT).show();

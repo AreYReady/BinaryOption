@@ -134,9 +134,12 @@ public class TradeActivity extends BaseActivity {
         }
     }
 
-    @Subscribe(sticky = true)
+    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
     public void eventCurrentOrder(BeanCurrentOrder beanCurrentOrder) {
         count=beanCurrentOrder.getOrders()==null?0:beanCurrentOrder.getOrders().size();
+        if(mBadgeView!=null){
+            mBadgeView.setBadgeCount(count);
+        }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void eventOrderResult(BeanOrderResult beanOrderResult){

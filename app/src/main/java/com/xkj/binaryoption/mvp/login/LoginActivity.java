@@ -76,4 +76,8 @@ private long exitTime = 0;
     public void getDisConnectMessage(MessageDisconnect messageDisconnect){
 
     }
+    //覆盖方法，
+    public void onTimeOut(String timeout){
+
+    }
 }
