@@ -304,7 +304,7 @@ public class SocketUtil {
 //            }
         }
         outSteam.close();
-//        inStream.close();
+//        inStream.closeDialog();
         return outSteam.toByteArray();
     }
 

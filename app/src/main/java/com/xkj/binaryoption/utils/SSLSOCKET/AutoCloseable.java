@@ -18,7 +18,7 @@ package com.xkj.binaryoption.utils.SSLSOCKET;
 
 /**
  * Defines an interface for classes that can (or need to) be closed once they
- * are not used any longer. Calling the {@code close} method releases resources
+ * are not used any longer. Calling the {@code closeDialog} method releases resources
  * that the object holds.
  *
  * <p>A common pattern for using an {@code AutoCloseable} resource: <pre>   {@code
@@ -26,7 +26,7 @@ package com.xkj.binaryoption.utils.SSLSOCKET;
  *   try {
  *      ...;
  *   } finally {
- *      foo.close();
+ *      foo.closeDialog();
  *   }
  * }</pre>
  *

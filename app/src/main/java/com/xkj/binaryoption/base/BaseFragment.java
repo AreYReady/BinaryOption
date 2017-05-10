@@ -1,11 +1,9 @@
 package com.xkj.binaryoption.base;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +11,8 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.xiasuhuei321.loadingdialog.view.LoadingDialog;
-import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.utils.SystemUtil;
+import com.xkj.binaryoption.utils.ThreadHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -82,25 +80,7 @@ protected View view;
         mToast.setText(strResId);
         mToast.show();
     }
-    /**
-     * 显示加载中界面
-     *
-     * @param view 相对view
-     */
-    public void showPopupLoading(View view) {
-        if(popupWindowLoading==null){
-            View popView = LayoutInflater.from(mContext).inflate(R.layout.dialog_loading, null);
-            popupWindowLoading = new PopupWindow(popView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
-            popupWindowLoading.setOutsideTouchable(false);
-            popupWindowLoading.setFocusable(false);
-            popupWindowLoading.setBackgroundDrawable(new BitmapDrawable());
-        }
-        popupWindowLoading.showAtLocation(view, Gravity.CENTER, 0, 0);
-    }
-    public void dissPopupWindos(){
-        popupWindowLoading.dismiss();
-        popupWindowLoading=null;
-    }
+
     LoadingDialog loadingDialog;
     public void showDialogLoading(){
         if(loadingDialog==null) {
@@ -112,19 +92,36 @@ protected View view;
                     .show();
         }
     }
-    public void showSucc(String success){
+    public void showSucc(final String success){
+        ThreadHelper.instance().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(loadingDialog!=null){
+                    loadingDialog.setSuccessText(success);
+                    loadingDialog.loadSuccess();
+                    loadingDialog.close();
+                    loadingDialog=null;
+                }
+            }
+        });
+    }
+    public void showfaild(final String failedString){
+        ThreadHelper.instance().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingDialog!=null){
+                    loadingDialog.setFailedText(failedString);
+                    loadingDialog.loadFailed();
+                    loadingDialog=null;
+                }
+            }
+        });
+    }
+    public void closeDialog(){
         if(loadingDialog!=null){
-            loadingDialog.setSuccessText(success);
-            loadingDialog.loadSuccess();
             loadingDialog.close();
             loadingDialog=null;
         }
     }
-    public void showfaild(String failedString){
-        if (loadingDialog!=null){
-            loadingDialog.setFailedText(failedString);
-            loadingDialog.loadFailed();
-            loadingDialog=null;
-        }
-    }
+
 }

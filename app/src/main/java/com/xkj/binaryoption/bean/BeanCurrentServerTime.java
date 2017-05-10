@@ -10,22 +10,19 @@ import com.xkj.binaryoption.utils.SystemUtil;
  */
 
 public class BeanCurrentServerTime {
-        long serverTime;
+        long serverTime=0;
         long nativeTime;
         long currentNativeTime;
         public  static BeanCurrentServerTime instance;
-        public static  synchronized  BeanCurrentServerTime getInstance(long currentServerTime){
+        public static  synchronized  BeanCurrentServerTime getInstance(){
             if(instance==null){
-                instance=new BeanCurrentServerTime(currentServerTime);
+                instance=new BeanCurrentServerTime();
             }
             return instance;
         }
-
-
-        private BeanCurrentServerTime(long currentServerTime){
+        public void setServerTime(long currentServerTime){
             this.nativeTime= System.currentTimeMillis();
             this.serverTime=currentServerTime;
-
         }
 
     /**
@@ -40,6 +37,9 @@ public class BeanCurrentServerTime {
         public long getOldServerTime(){
             return serverTime;
         }
+        public boolean isServerTime(){
+         return serverTime==0?false:true;
+         }
 
 
 }

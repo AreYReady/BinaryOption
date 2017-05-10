@@ -7,17 +7,25 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.xkj.binaryoption.BuildConfig;
+import com.xkj.binaryoption.bean.BeanCurrentServerTime;
+import com.xkj.binaryoption.bean.BeanServerTimeForHttp;
 import com.xkj.binaryoption.bean.BeanUserLoginLogin;
 import com.xkj.binaryoption.bean.IUserLogin;
+import com.xkj.binaryoption.constant.RequestConstant;
 import com.xkj.binaryoption.constant.ServerIP;
+import com.xkj.binaryoption.constant.UrlConstant;
 import com.xkj.binaryoption.handler.HandlerSend;
 import com.xkj.binaryoption.handler.HandlerWrite;
+import com.xkj.binaryoption.io.okhttp.OkhttpUtils;
 import com.xkj.binaryoption.mvp.login.LoginPrestener;
+import com.xkj.binaryoption.utils.AesEncryptionUtil;
+import com.xkj.binaryoption.utils.DateUtils;
 import com.xkj.binaryoption.utils.SSLSOCKET.Decoder;
 import com.xkj.binaryoption.utils.SSLSOCKET.Encoder;
 import com.xkj.binaryoption.utils.SSLSOCKET.SSLDecoderImp;
 import com.xkj.binaryoption.utils.SSLSOCKET.SSLEncodeImp;
 import com.xkj.binaryoption.utils.SSLSOCKET.SSLSocketChannel;
+import com.xkj.binaryoption.utils.SystemUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -26,6 +34,12 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+import java.util.TreeMap;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by huangsc on 2017-04-18.
@@ -37,6 +51,7 @@ public class LoginPresenterCompl implements LoginPrestener.PreListener{
     public static final String THREAD_READ = "threadRead";
     public static final String SSL_SOCKET = "sslSocket";
     public static final String HANDLER_WRITE = "handler_write";
+    private String TAG= SystemUtil.getTAG(this);
     LoginPrestener.ViewListener iLoginView;
     IUserLogin mIUserLogin;
     HandlerThread mHandlerThread;
@@ -50,6 +65,54 @@ public class LoginPresenterCompl implements LoginPrestener.PreListener{
 
     @Override
     public void doLogin(final String name, final String passwd) {
+        loginHttp(name);
+        loginSocket(name, passwd);
+//
+    }
+
+    private void loginHttp(String name) {
+        if(BeanCurrentServerTime.getInstance().isServerTime()){
+            sendLoginHttpRequest(name);
+        }else{
+            sendServiceTime(name);
+        }
+    }
+
+    private void sendServiceTime(final String name) {
+        OkhttpUtils.enqueue(UrlConstant.URL_SERVICE_TIME, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                mIUserLogin.onLoginHttpfaild("网络连接失败，请检查网络");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                BeanServerTimeForHttp beanServerTimeForHttp = new Gson().fromJson(response.body().string(), BeanServerTimeForHttp.class);
+                if (beanServerTimeForHttp.getStatus() == 1) {
+                    BeanCurrentServerTime.getInstance().setServerTime(DateUtils.getOrderStartTimeNoTimeZone(beanServerTimeForHttp.getData(), "yyyyMMddHHmmss"));
+                        loginHttp(name);
+                }
+            }
+        });
+    }
+
+    private void sendLoginHttpRequest(String name) {
+        Map<String ,String> map=new TreeMap<>();
+        map.put(RequestConstant.PHONE, AesEncryptionUtil.stringBase64toString(name));
+        OkhttpUtils.enqueue(UrlConstant.URL_MT4_CRMUSERLIST, map, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                mIUserLogin.onLoginHttpfaild("网络连接失败，请检查网络");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.i(TAG, "onResponse: 查询mt4账号列表"+response.body().string());
+            }
+        });
+    }
+
+    private void loginSocket(final String name, final String passwd) {
         mHandlerThread = new HandlerThread("SSL"){
             @Override
             public void run() {
@@ -66,7 +129,6 @@ public class LoginPresenterCompl implements LoginPrestener.PreListener{
         Handler handlerRead = new HandlerSend(mHandlerThread.getLooper(),
                 mContext,mHandlerThread, mSSLSocketChannel, mHandlerWrite);
         EventBus.getDefault().postSticky(handlerRead);
-//
     }
 
     private void sslTest(String name, String passwd) throws KeyManagementException {

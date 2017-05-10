@@ -102,9 +102,9 @@ public abstract class NioSslPeer {
      *   <li>7. unwrap:   Finished</li>
      * </ul>
      * <p/>
-     * Handshake is also used during the end of the session, in order to properly close the connection between the two peers.
-     * A proper connection close will typically include the one peer sending a CLOSE message to another, and then wait for
-     * the other's CLOSE message to close the transport link. The other peer from his perspective would read a CLOSE message
+     * Handshake is also used during the end of the session, in order to properly closeDialog the connection between the two peers.
+     * A proper connection closeDialog will typically include the one peer sending a CLOSE message to another, and then wait for
+     * the other's CLOSE message to closeDialog the transport link. The other peer from his perspective would read a CLOSE message
      * from his peer and then enter the handshake procedure to send his own CLOSE message as well.
      *
      * @param socketChannel - the socket channel that connects the two peers.
@@ -140,10 +140,10 @@ public abstract class NioSslPeer {
                     try {
                         engine.closeInbound();
                     } catch (SSLException e) {
-                        log.info("This engine was forced to close inbound, without having received the proper SSL/TLS close notification message from the peer, due to end of stream.");
+                        log.info("This engine was forced to closeDialog inbound, without having received the proper SSL/TLS closeDialog notification message from the peer, due to end of stream.");
                     }
                     engine.closeOutbound();
-                    // After closeOutbound the engine will be set to WRAP state, in order to try to send a close message to the client.
+                    // After closeOutbound the engine will be set to WRAP state, in order to try to send a closeDialog message to the client.
                     handshakeStatus = engine.getHandshakeStatus();
                     break;
                 }
@@ -153,7 +153,7 @@ public abstract class NioSslPeer {
                     peerNetData.compact();
                     handshakeStatus = result.getHandshakeStatus();
                 } catch (SSLException sslException) {
-                    log.info("A problem was encountered while processing the data that caused the SSLEngine to abort. Will try to properly close connection...");
+                    log.info("A problem was encountered while processing the data that caused the SSLEngine to abort. Will try to properly closeDialog connection...");
                     engine.closeOutbound();
                     handshakeStatus = engine.getHandshakeStatus();
                     break;
@@ -187,7 +187,7 @@ public abstract class NioSslPeer {
                     result = engine.wrap(myAppData, myNetData);
                     handshakeStatus = result.getHandshakeStatus();
                 } catch (SSLException sslException) {
-                    log.info("A problem was encountered while processing the data that caused the SSLEngine to abort. Will try to properly close connection...");
+                    log.info("A problem was encountered while processing the data that caused the SSLEngine to abort. Will try to properly closeDialog connection...");
                     engine.closeOutbound();
                     handshakeStatus = engine.getHandshakeStatus();
                     break;
@@ -293,11 +293,11 @@ public abstract class NioSslPeer {
     }
 
     /**
-     * This method should be called when this peer wants to explicitly close the connection
-     * or when a close message has arrived from the other peer, in order to provide an orderly shutdown.
+     * This method should be called when this peer wants to explicitly closeDialog the connection
+     * or when a closeDialog message has arrived from the other peer, in order to provide an orderly shutdown.
      * <p/>
-     * It first calls {@link SSLEngine#closeOutbound()} which prepares this peer to send its own close message and
-     * sets {@link SSLEngine} to the <code>NEED_WRAP</code> state. Then, it delegates the exchange of close messages
+     * It first calls {@link SSLEngine#closeOutbound()} which prepares this peer to send its own closeDialog message and
+     * sets {@link SSLEngine} to the <code>NEED_WRAP</code> state. Then, it delegates the exchange of closeDialog messages
      * to the handshake method and finally, it closes socket channel.
      *
      * @param socketChannel - the transport link used between the two peers.
@@ -312,7 +312,7 @@ public abstract class NioSslPeer {
 
     /**
      * In addition to orderly shutdowns, an unorderly shutdown may occur, when the transport link (socket channel)
-     * is severed before close messages are exchanged. This may happen by getting an -1 or {@link IOException}
+     * is severed before closeDialog messages are exchanged. This may happen by getting an -1 or {@link IOException}
      * when trying to read from the socket channel, or an {@link IOException} when trying to write to it.
      * In both cases {@link SSLEngine#closeInbound()} should be called and then try to follow the standard procedure.
      *
@@ -324,7 +324,7 @@ public abstract class NioSslPeer {
         try {
             engine.closeInbound();
         } catch (Exception e) {
-            log.info("This engine was forced to close inbound, without having received the proper SSL/TLS close notification message from the peer, due to end of stream.");
+            log.info("This engine was forced to closeDialog inbound, without having received the proper SSL/TLS closeDialog notification message from the peer, due to end of stream.");
         }
         closeConnection(socketChannel, engine);
     }

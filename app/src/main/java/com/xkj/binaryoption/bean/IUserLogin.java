@@ -6,4 +6,5 @@ package com.xkj.binaryoption.bean;
 public interface IUserLogin {
 	int getLogin();
 	String getPassword_hash();
+	void onLoginHttpfaild(String faildString);
 }

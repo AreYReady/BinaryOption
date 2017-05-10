@@ -7,7 +7,7 @@ import com.xkj.binaryoption.BuildConfig;
  * @author xjunda
  * @date 2016/7/26
  */
-public class BeanUserLoginLogin implements IUserLogin {
+public class BeanUserLoginLogin  {
 
     /**
      * msg_type : 10

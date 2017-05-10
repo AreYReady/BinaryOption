@@ -46,6 +46,7 @@ public class CustomEditText extends FrameLayout {
     private boolean selectStyle=false;
     private int checkCode=GONE;
     private int inputType=-1;
+    View inflate;
 
     public CustomEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -72,7 +73,7 @@ public class CustomEditText extends FrameLayout {
             }
         }
         typedArray.recycle();
-        View inflate = LayoutInflater.from(context).inflate(R.layout.v_edittext, this);
+         inflate = LayoutInflater.from(context).inflate(R.layout.v_edittext, this);
         mLlEditTextParent=(LinearLayout)inflate.findViewById(R.id.ll_edit_text_parent);
         mEtEditText=(EditText)inflate.findViewById(R.id.et_edit_text);
         if(inputType==0){
@@ -91,11 +92,17 @@ public class CustomEditText extends FrameLayout {
         mTvCheckCode.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mTvCheckCode.setClickable(false);
                 countdown();
                 if(mOnClickCheckCodeListener!=null&&mTvCheckCode.isClickable()){
                     mOnClickCheckCodeListener.onClick(view);
                 }
+                mTvCheckCode.setClickable(false);
+            }
+        });
+        mEtEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                inflate.setFocusable(b);
             }
         });
     }
@@ -143,5 +150,10 @@ public class CustomEditText extends FrameLayout {
     public OnClickListener mOnClickCheckCodeListener;
     public void setOnClickCheckCodeListener(OnClickListener onClickCheckCodeListener){
         mOnClickCheckCodeListener=onClickCheckCodeListener;
+    }
+
+    @Override
+    public void setOnFocusChangeListener(OnFocusChangeListener l) {
+        mEtEditText.setOnFocusChangeListener(l);
     }
 }

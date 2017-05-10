@@ -218,12 +218,12 @@ public class NioSslClient extends NioSslPeer {
     }
 
     /**
-     * Should be called when the client wants to explicitly close the connection to the server.
+     * Should be called when the client wants to explicitly closeDialog the connection to the server.
      *
      * @throws IOException if an I/O error occurs to the socket channel.
      */
     public void shutdown() throws IOException {
-        log.info("About to close connection with the server...");
+        log.info("About to closeDialog connection with the server...");
         closeConnection(socketChannel, engine);
         executor.shutdown();
         log.info("Goodbye!");

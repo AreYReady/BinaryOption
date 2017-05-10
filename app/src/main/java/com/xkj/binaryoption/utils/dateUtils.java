@@ -99,6 +99,7 @@ public class DateUtils {
         return sdf.format(new Date(time));
     }
 
+
     /**
      * @author xjunda
      * Created at 2016-07-16 11:01
@@ -138,6 +139,22 @@ public class DateUtils {
      */
     public static long getOrderStartTimeNoTimeZone(String open_time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            return sdf.parse(open_time).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+    /**
+     * 获取订单开始时间
+     *
+     * @param open_time
+     * @param format  时间格式
+     * @return
+     */
+    public static long getOrderStartTimeNoTimeZone(String open_time,String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
         try {
             return sdf.parse(open_time).getTime();
         } catch (ParseException e) {

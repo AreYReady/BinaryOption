@@ -358,13 +358,13 @@ public final class SSLSocketChannel<M> implements AutoCloseable {
 
     private void handleEndOfStream() throws IOException {
         try {
-            // This will check if the server has sent the appropriate SSL close handshake alert and throws an exception
+            // This will check if the server has sent the appropriate SSL closeDialog handshake alert and throws an exception
             // if it did not. Note that some servers don't, so this should not be treated as a fatal exception.
             sslEngine.closeInbound();
             close();
         } catch (SSLException e) {
-            // This exception might happen because some servers do not respond to the client's close notify alert
-            // message during the SSL close handshake; they just close the connection. This is normally not a problem.
+            // This exception might happen because some servers do not respond to the client's closeDialog notify alert
+            // message during the SSL closeDialog handshake; they just closeDialog the connection. This is normally not a problem.
             LOG.debug("Exception while calling SSLEngine.closeInbound(): {}", e.getMessage());
             closeChannel();
         }
@@ -384,18 +384,18 @@ public final class SSLSocketChannel<M> implements AutoCloseable {
     }
 
     /**
-     * Closes the connection. This will attempt to do the SSL close handshake before closing the connection.
+     * Closes the connection. This will attempt to do the SSL closeDialog handshake before closing the connection.
      *
      * @throws IOException If an I/O error occurs.
      */
     @Override
     public void close() throws IOException {
         // This tells the SSLEngine that we are not going to pass it any more application data
-        // and prepares it for the close handshake
+        // and prepares it for the closeDialog handshake
         LOG.trace("Performing closing SSL handshake");
         sslEngine.closeOutbound();
 
-        // Perform close handshake
+        // Perform closeDialog handshake
         checkHandshakeStatus();
 
         closeChannel();

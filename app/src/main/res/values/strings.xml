@@ -14,4 +14,6 @@
         <item>实名认证</item>
         <item>退出登录</item>
     </string-array>
+    <string name="action_fail">操作失败\n %s</string>
+    <string name="action_succ">操作成功</string>
 </resources>

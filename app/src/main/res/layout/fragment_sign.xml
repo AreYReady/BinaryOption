@@ -59,14 +59,22 @@
         customEditText:signImage="@mipmap/pwd1"
         />
     <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/cb_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="我已阅读且完全理解并同意[风险提示书]"
         style="@style/text_desc_"
         android:theme="@style/my_checkbox"/>
-
+    <TextView
+        android:id="@+id/tv_confirm_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        style="@style/text_prompt_erro"
+        android:layout_gravity="right"
+        android:text="请确定"/>
     <android.support.v7.widget.AppCompatButton
-        android:layout_marginTop="@dimen/space_big"
+        android:id="@+id/b_sign_up"
         android:text="注册"
         android:layout_width="match_parent"
         android:layout_height="@dimen/v_button_enter_h"

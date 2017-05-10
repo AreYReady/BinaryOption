@@ -6,7 +6,6 @@ import android.widget.Button;
 
 import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.base.BaseActivity;
-import com.xkj.binaryoption.easypay.PayUtils;
 import com.xkj.binaryoption.utils.ToashUtil;
 
 import butterknife.BindView;
@@ -21,7 +20,6 @@ import butterknife.OnClick;
 public class PayActivity extends BaseActivity {
     @BindView(R.id.b_query)
     Button mBQuery;
-    PayUtils mPayUtils;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,7 +30,6 @@ public class PayActivity extends BaseActivity {
 
     @Override
     public void initRegister() {
-        mPayUtils=PayUtils.getInstance();
     }
 
     @Override
@@ -48,6 +45,5 @@ public class PayActivity extends BaseActivity {
     @OnClick(R.id.b_query)
     public void onViewClicked() {
         ToashUtil.showShort(this,"hh");
-        mPayUtils.queryOrder();
     }
 }

@@ -1,7 +1,15 @@
 package com.xkj.binaryoption.utils;
 
+import android.util.Base64;
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -79,6 +87,14 @@ public class AesEncryptionUtil {
         }
         return null;
     }
+    /**
+     * base64转换
+     * @param string
+     * @return
+     */
+    public static String stringBase64toString(String string){
+        return  Base64.encodeToString(string.getBytes(),Base64.NO_WRAP);
+    }
 
 
     /**
@@ -154,6 +170,82 @@ public class AesEncryptionUtil {
             bytes[i] = (byte) (temp & 0xff);
         }
         return bytes;
+    }
+
+    /**
+     * 拼接url
+     * @param url
+     * @param params
+     * @return
+     */
+    public static String getUrl(String url,Map<String, String> params) {
+        // 添加url参数
+        if (params != null) {
+            Iterator<String> it = params.keySet().iterator();
+            StringBuffer sb = null;
+            while (it.hasNext()) {
+                String key = it.next();
+                String value = params.get(key);
+                if (sb == null) {
+                    sb = new StringBuffer();
+                    sb.append("?");
+                } else {
+                    sb.append("&");
+                }
+                sb.append(key);
+                sb.append("=");
+                sb.append(value);
+            }
+            url += sb.toString();
+        }
+        return url;
+    }
+
+    /**
+     * 获取签名
+     * @param url
+     * @param map
+     * @return
+     */
+    public static String getApiSign(String url, Map<String,String> map){
+        return getMD5(getUrl(url,map).concat("v66YKULHFld2JElhm"));
+    }
+    /**
+     * md5-32位加密,小写
+     * @param info
+     * @return
+     */
+    public static String getMD5(String info)
+    {
+        try
+        {
+            Log.i("getMD5:hsc", "getMD5: "+info);
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            md5.update(info.getBytes("UTF-8"));
+            byte[] encryption = md5.digest();
+
+            StringBuffer strBuf = new StringBuffer();
+            for (int i = 0; i < encryption.length; i++)
+            {
+                if (Integer.toHexString(0xff & encryption[i]).length() == 1)
+                {
+                    strBuf.append("0").append(Integer.toHexString(0xff & encryption[i]));
+                }
+                else
+                {
+                    strBuf.append(Integer.toHexString(0xff & encryption[i]));
+                }
+            }
+            return strBuf.toString();
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            return "";
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            return "";
+        }
     }
 
 }

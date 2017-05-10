@@ -144,14 +144,15 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
         } else {
             if(code==-100){//服务器出错，超时等
                 showfaild("网路或者服务器出错了，请稍后重试");
-                showToast("网路或者服务器出错了，请稍后重试");
             }else {
-                showToast("用户名或者密码错误，请重试");
                 showfaild("用户名或者密码错误，请重试");
             }
 
 //            mBLogin.setEnabled(true);
         }
+    }
+    public void onLoginHttpfaild(String faildString){
+        showfaild(faildString);
     }
     /**
      * 获取所有产品，并且订阅
