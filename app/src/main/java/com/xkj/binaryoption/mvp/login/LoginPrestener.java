@@ -7,6 +7,7 @@ package com.xkj.binaryoption.mvp.login;
 
 public class LoginPrestener {
     public interface ViewListener{
+      void   onLoginHttpfaild(String failedString);
     }
     public interface PreListener{
         void doLogin(String name, String passwd);

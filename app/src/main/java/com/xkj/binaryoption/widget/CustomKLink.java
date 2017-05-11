@@ -72,7 +72,6 @@ public class CustomKLink extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO Auto-generated method stub
         // super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.d(TAG, "onMeasure-----------");
         setMeasuredDimension(mWidth, mHeight);
     }
 
@@ -118,7 +117,8 @@ public class CustomKLink extends View {
         mTimeTextPaint.setTextAlign(Paint.Align.LEFT);
         mRealTimePricesPaint = new Paint();
         mRealTimePricesPaint.setTextSize(5);
-        mRealTimePricesPaint.setStyle(Paint.Style.FILL);
+        mRealTimePricesPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mRealTimePricesPaint.setStrokeWidth(2);
 
     }
 
@@ -168,6 +168,7 @@ public class CustomKLink extends View {
                 mLinkWidth,
                 lastY,
                 mRealTimePricesPaint);
+        Log.i(TAG, "drawRealTime: y"+lastY);
 
         canvas.drawRoundRect(mLinkWidth,
                 lastY + top - DensityUtil.dip2px(mContext, 5),

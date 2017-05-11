@@ -40,18 +40,19 @@ public class HandlerWrite extends Handler {
                 response = mSSLSocketChannel.receive();
                 Log.i(TAG, "doLogin: Response received: " + response);
             }
-        } catch (Exception e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             try {
                 mSSLSocketChannel.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }finally {
-                mSSLSocketChannel = null;
-                //如果锻炼，重新发送
-                EventBus.getDefault().post(new MessageDisconnect());
-                flag = false;
-                Log.i(TAG, "doLogin: Response received: " + response);
+                    mSSLSocketChannel = null;
+                    //如果锻炼，重新发送
+                    EventBus.getDefault().post(new MessageDisconnect());
+                    flag = false;
+                    Log.i(TAG, "doLogin: Response received: " + response);
             }
         }
         Log.i(TAG, "doLogin: Response received: " + response);

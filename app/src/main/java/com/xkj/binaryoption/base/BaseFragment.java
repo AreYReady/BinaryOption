@@ -118,10 +118,16 @@ protected View view;
         });
     }
     public void closeDialog(){
-        if(loadingDialog!=null){
-            loadingDialog.close();
-            loadingDialog=null;
-        }
+        ThreadHelper.instance().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(loadingDialog!=null){
+                    loadingDialog.close();
+                    loadingDialog=null;
+                }
+            }
+        });
+
     }
 
 }

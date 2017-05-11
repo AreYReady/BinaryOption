@@ -252,9 +252,7 @@ public class SignUpFragment extends BaseFragment {
                 BeanSignUpInfo beanSignUpInfo=new Gson().fromJson(response.body().string(), BeanSignUpInfo.class);
                 Log.i(TAG, "onResponse: 注册"+new Gson().toJson(beanSignUpInfo));
                 if(beanSignUpInfo.getStatus()==1){
-
                     closeDialog();
-//                    showSucc("注册成功");
                     showSuccDialog("注册成功", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {

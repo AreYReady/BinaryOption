@@ -13,7 +13,8 @@ public  class MyConstant {
         BUY_DOWN,
         BUY_UP;
     }
-    public static String user_name="Login";
+    public static String user_name="Login_telephone";
+    public static String user_name_mt4="Login_mt4";
     public static String user_password="password";
     public static String IS_REMEMBER="is_remember";
 

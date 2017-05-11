@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
 
@@ -17,8 +16,6 @@ import com.xkj.binaryoption.utils.DensityUtil;
 import com.xkj.binaryoption.utils.SystemUtil;
 
 import java.util.List;
-
-import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by huangsc on 2017-04-25.
@@ -72,7 +69,6 @@ public class CustomTimeLink extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO Auto-generated method stub
         // super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.d("ee", "onMeasure-----------");
         setMeasuredDimension(mWidth, mHeight);
     }
     public void setWidthHeight(int width, int height) {

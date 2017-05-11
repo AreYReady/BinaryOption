@@ -172,7 +172,7 @@ public class CustomPopupWindow extends PopupWindow {
                     return;
                 }
                 //发送订单
-                EventBus.getDefault().post(new BeanOrderRequest(Integer.valueOf(ACache.get(context).getAsString(MyConstant.user_name))
+                EventBus.getDefault().post(new BeanOrderRequest(Integer.valueOf(ACache.get(context).getAsString(MyConstant.user_name_mt4))
                         , symbolsBean.getSymbol(), buyAciton == MyConstant.BuyAciton.BUY_DOWN ? 0 : 1
                         , Integer.valueOf(amount), cycle, percent));
             }

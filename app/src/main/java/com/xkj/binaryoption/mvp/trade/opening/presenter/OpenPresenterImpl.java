@@ -12,7 +12,6 @@ import com.xkj.binaryoption.bean.BeanOrderRequest;
 import com.xkj.binaryoption.bean.BeanSymbolConfig;
 import com.xkj.binaryoption.bean.EventBusAllSymbol;
 import com.xkj.binaryoption.bean.RealTimeDataList;
-import com.xkj.binaryoption.constant.MessageType;
 import com.xkj.binaryoption.mvp.trade.opening.contract.OpenContract;
 import com.xkj.binaryoption.utils.SystemUtil;
 
@@ -69,23 +68,19 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
     public void onGetRealTimeData(RealTimeDataList realTimeDataList) {
         Log.i("hsc", "onGetRealTimeData: ");
         mView.eventRealTimeData(realTimeDataList);
-
     }
 
-    /**
-     * 客户端主动发送心跳
-     */
-    private void sendHeartBeat(){
-        if(mHandler!=null){
-            sendMessageToServer(MessageType.TYPE_ORDER_SREVER_TIME);
-        }
-    }
+
     private void sendMessageToServer(String data) {
         Message message = new Message();
         message.obj = (data);
+        Log.i(TAG, "sendMessageToServer: "+data);
+        if(mHandler==null){
+            Log.i(TAG, "sendMessageToServer: 为空");
+        }
         mHandler.sendMessage(message);
     }
-    @Subscribe(sticky = true ,priority = 100)
+    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN,priority = 3)
     public void getHandler(Handler handler){
         Log.i(TAG, "getHandler: ");
         mHandler=handler;
@@ -101,7 +96,6 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
         ArrayMap<String, Integer> map=new ArrayMap<>();
         for(EventBusAllSymbol.ItemSymbol itemSymbol:eventBusAllSymbol.getItems()){
             map.put(itemSymbol.getSymbol(),itemSymbol.getDigits());
-
         }
       mView.eventAllSymbolsData(map);
   }
@@ -110,8 +104,9 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
      * 所有要展示的
      * @param beanSymbolConfig
      */
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN,priority = 1)
     public void eventAllSubSymbolData(BeanSymbolConfig beanSymbolConfig){
+        Log.i(TAG, "eventAllSubSymbolData: ");
         if(beanSymbolConfig.getCount()==0){
             return;
         }
@@ -133,6 +128,4 @@ public class OpenPresenterImpl implements OpenContract.Presenter{
     public void sendOrderRequest(BeanOrderRequest beanOrderRequest) {
         sendMessageToServer(new Gson().toJson(beanOrderRequest));
     }
-
-
 }

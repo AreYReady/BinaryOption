@@ -94,7 +94,7 @@ public class BeanSymbolConfig {
     }
 
     /**
-     * @link MinaTimeChartActivity #onGetAllSymbol  sticky = true
+     * @link MinaTimeChartActivity #onGetAllSubSymbol  sticky = true
      * @Link TradeIndexActivity #onGetSymbolShow
      */
     public static class SymbolsBean {

@@ -13,7 +13,7 @@ public class BeanUserLoginLogin  {
      * msg_type : 10
      * login : 1000
      * password_hash : 54B7589A1B85E7324F00483EB7F6A2F1
-     * port : 9988
+     * port : 9991
      */
 
     private int msg_type;

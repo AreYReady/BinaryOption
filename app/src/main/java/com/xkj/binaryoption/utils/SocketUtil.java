@@ -345,12 +345,10 @@ public class SocketUtil {
             sslSocketChannel = SSLSocketChannel.open(address, encoder, decoder, 1024*1024, 1024*1024);
             Log.i("123", "doLogin: Channel opened, initial handshake done");
             Log.i("123", "doLogin: Sending request");
-
-            BeanUserLoginLogin userLogin = new BeanUserLoginLogin(Integer.valueOf(ACache.get(context).getAsString(MyConstant.user_name)),
+            BeanUserLoginLogin userLogin = new BeanUserLoginLogin(Integer.valueOf(ACache.get(context).getAsString(MyConstant.user_name_mt4)),
                     ACache.get(context).getAsString(MyConstant.user_password));
             String loginStr = new Gson().toJson(userLogin, BeanUserLoginLogin.class);
             sslSocketChannel.send(loginStr);
-
             Log.i("123", "doLogin: Receiving response");
             handlerWrite.setSSLSocketChannel(sslSocketChannel);
             handlerWrite.sendEmptyMessage(0);

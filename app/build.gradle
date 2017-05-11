@@ -14,7 +14,7 @@ android {
     buildTypes {
         debug {
             buildConfigField 'String', 'API_URL', '"115.29.50.147"'
-            buildConfigField 'Integer', 'USERPORT', '9988'
+            buildConfigField 'Integer', 'USERPORT', '9991'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

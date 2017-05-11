@@ -102,6 +102,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     private Map<String, Integer> mAllSymbolsDigits;
     private Map<String, List<RealTimeDataList.BeanRealTime>> mRealTimeDataMap = new ArrayMap<>();
     private Map<String, BeanHistoryPrices> mHistoryPricesMap = new ArrayMap<>();
+    TabLayout.Tab tab;
 
     /**
      * 记录实时分时图数据/秒
@@ -139,7 +140,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvSymbols.setLayoutManager(layoutManager);
         mTlType.addTab(mTlType.newTab().setText("分时图").setTag("fenshi"));
-        TabLayout.Tab tab;
+
         mTlType.addTab(tab = mTlType.newTab().setText("5分钟").setTag("m5"));
         mTlType.addTab(mTlType.newTab().setText("15分钟").setTag("m15"));
         mTlType.addTab(mTlType.newTab().setText("60分钟").setTag("h1"));
@@ -148,28 +149,6 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
         linearLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         linearLayout.setDividerDrawable(ContextCompat.getDrawable(mContext,
                 R.drawable.layout_divider_vertical));
-        mScrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mScrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                mCstContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
-                mCklContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
-                mCsspContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
-                Log.i(TAG, "initView: " + mScrollView.getWidth());
-            }
-        });
-        mCsspContent.setEventXListener(new CustomShowPrices.EventXListener() {
-            @Override
-            public void getX(float x) {
-                if(mCklContent.getVisibility()==View.VISIBLE){
-                    BeanShowPrices beanShowPrices = mCklContent.getBeanShowPrices(x);
-                    if(beanShowPrices!=null){
-                        mCsspContent.setShowPricesData(beanShowPrices);
-                    }
-                }
-            }
-        });
-        setCurrentSymbol(mBeanSymbolTags.get(0).getSymbol());
         mTlType.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -199,14 +178,36 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
 
             }
         });
+        mScrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mScrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                mCstContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
+                mCklContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
+                mCsspContent.setWidthHeight(mScrollView.getWidth(), mScrollView.getHeight());
+                Log.i(TAG, "initView: " + mScrollView.getWidth());
+            }
+        });
+        mCsspContent.setEventXListener(new CustomShowPrices.EventXListener() {
+            @Override
+            public void getX(float x) {
+                if(mCklContent.getVisibility()==View.VISIBLE){
+                    BeanShowPrices beanShowPrices = mCklContent.getBeanShowPrices(x);
+                    if(beanShowPrices!=null){
+                        mCsspContent.setShowPricesData(beanShowPrices);
+                    }
+                }
+            }
+        });
+        setCurrentSymbol(mBeanSymbolTags.get(0).getSymbol());
         tab.select();
-//        sendHistoryPrices();
+        sendHistoryPrices();
     }
 
     @Override
     protected void initRegister() {
-        mPresenter = new OpenPresenterImpl(mContext, this);
         EventBus.getDefault().register(this);
+        mPresenter = new OpenPresenterImpl(mContext, this);
     }
 
     @Override
@@ -215,13 +216,14 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
         mDupBeanSymbolTags = new ArrayList<>();
         mAllSubSymbols = getArguments().getString(TradeActivity.ALL_SYMBOLS_DATA);
         beanSymbolConfig = new Gson().fromJson(mAllSubSymbols, BeanSymbolConfig.class);
+        Log.i(TAG, "initData: ");
         for (BeanSymbolConfig.SymbolsBean symbolsBean : beanSymbolConfig.getSymbols()) {
             mBeanSymbolTags.add(new BeanSymbolTag(symbolsBean.getDesc(), symbolsBean.getSymbol(), "0.0", true));
             mDupBeanSymbolTags.add(new BeanSymbolTag(symbolsBean.getDesc(), symbolsBean.getSymbol(), "0.0", true));
             mPresenter.sendSubSymbol(symbolsBean.getSymbol());
         }
     }
-
+    
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -229,9 +231,12 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
     }
 
     private void sendHistoryPrices() {
+        Log.i(TAG, "sendHistoryPrices: ");
         if (mHistoryPricesMap.containsKey(DataUtil.symbolConnectPeriod(mCurrentSymbol, DataUtil.selectPeriod(mPeriod)))) {
+            Log.i(TAG, "sendHistoryPrices: 1");
             mCklContent.postInvalidate(mHistoryPricesMap.get(DataUtil.symbolConnectPeriod(mCurrentSymbol, DataUtil.selectPeriod(mPeriod))));
         } else {
+            Log.i(TAG, "sendHistoryPrices: 2");
             mPresenter.sendHistoryPrices(new BeanHistoryRequest(mCurrentSymbol, bar_count, mPeriod));
         }
     }
@@ -330,7 +335,6 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
                 if (mHistoryPricesMap.containsKey(DataUtil.symbolConnectPeriod(beanRealTime.getSymbol(), period))) {
                     beanHistoryPrices = mHistoryPricesMap.get(DataUtil.symbolConnectPeriod(beanRealTime.getSymbol(), period));
                     //娶最后的时间进行计算，如果还没超过当前时间点，那么时间有效，计算最后一个时间，如果时间超过，删除第一个时间点，增加一个新的时间点
-                    Log.i(TAG, "refreshKLink: " + DateUtils.getOrderStartTimeNoTimeZone(beanRealTime.getTime()) / 1000 + "  最后一个时间" + (long) beanHistoryPrices.getItems().get(beanHistoryPrices.getCount() - 1).getT());
                     if (DateUtils.getOrderStartTimeNoTimeZone(beanRealTime.getTime()) / 1000 - (long) beanHistoryPrices.getItems().get(beanHistoryPrices.getCount() - 1).getT() > period * 60) {
                         //超出时间
                         beanHistoryPrices.getItems().add(new BeanHistoryPrices.ItemsBean(
@@ -366,7 +370,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
      * @param realTimeDataList
      */
     private void refreshRealTimeLink(RealTimeDataList realTimeDataList) {
-        Log.i(TAG, "refreshRealTimeLink: 刷新分时图实时数据");
+//        Log.i(TAG, "refreshRealTimeLink: 刷新分时图实时数据");
         for (RealTimeDataList.BeanRealTime beanRealTime : realTimeDataList.getQuotes()) {
             //判断是是否存在，存在则判断是否大于80，不存在则添加
             if (mRealTimeDataMap.containsKey(beanRealTime.getSymbol())) {
@@ -394,7 +398,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
      * @param realTimeDataList
      */
     private void refreshSymbolsTag(RealTimeDataList realTimeDataList) {
-        Log.i(TAG, "refreshSymbolsTag: 刷新商品数据");
+//        Log.i(TAG, "refreshSymbolsTag: 刷新商品数据");
         BeanSymbolTag beanSymbolTag;
         for (RealTimeDataList.BeanRealTime beanRealTime : realTimeDataList.getQuotes()) {
             for (int i = 0; i < mBeanSymbolTags.size(); i++) {
@@ -425,7 +429,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
      * @param beanRealTimes
      */
     private void refreshTimeLink(Map<String, List<RealTimeDataList.BeanRealTime>> beanRealTimes) {
-        Log.i(TAG, "refreshTimeLink: 刷新分时图");
+//        Log.i(TAG, "refreshTimeLink: 刷新分时图");
         mRealTimeDataMap = beanRealTimes;
         //精度存在才继续
         if (mAllSymbolsDigits == null) {
@@ -457,7 +461,7 @@ public class OpenFragment extends BaseFragment implements OpenContract.View {
         if (beanOrderResponse.getResult_code() == 0) {
             ToashUtil.showShort(mContext, "下单成功");
         } else {
-            ToashUtil.showShort(mContext, "下单失败，请重新");
+            ToashUtil.showShort(mContext, "下单失败，请重新\n"+beanOrderResponse.getError_reason());
         }
     }
 

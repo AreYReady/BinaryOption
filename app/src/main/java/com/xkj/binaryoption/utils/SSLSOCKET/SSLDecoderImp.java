@@ -90,7 +90,7 @@ public class SSLDecoderImp implements Decoder<String> {
                 case MessageType.TYPE_BINARY_SYMBOLE_SHOW://要展示的产品
                     BeanSymbolConfig symbolShow = new Gson().fromJson(resultMessage, BeanSymbolConfig.class);
                     Log.i(TAG, "handleResult:要展示的产品=  "+resultMessage);
-                    EventBus.getDefault().postSticky(symbolShow);
+                    EventBus.getDefault().post(symbolShow);
                     break;
                 case MessageType.TYPE_BINARY_ACTIVE_ORDER_LIST://进行中订单
                     Log.i(TAG, "handleResult:进行中订单=  "+resultMessage);
@@ -118,7 +118,7 @@ public class SSLDecoderImp implements Decoder<String> {
                     Log.i("123", "handleResult: historyffffff");
                     break;
                 case MessageType.TYPE_BINARY_ORDER_RESPONSE://下订单是否成功
-                    Log.i(TAG, "handleResult:TYPE_BINARY_ORDER_RESPONSE=  "+resultMessage);
+                    Log.i(TAG, "handleResult:下单是否成功=  "+resultMessage);
                     BeanOrderResponse orderResponse = new Gson().fromJson(resultMessage, BeanOrderResponse.class);
                     EventBus.getDefault().post(orderResponse);
                     break;

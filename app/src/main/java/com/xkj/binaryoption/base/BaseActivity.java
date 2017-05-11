@@ -33,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected String TAG= SystemUtil.getTAG(this);
     protected Context mContext;
     private Handler mHandler;
-    private int connectCount=3;
+    private int connectCount=10;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +68,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
     @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
     public void getHandler(Handler handler){
-        connectCount=10;
         mHandler=handler;
         if(loadingDialog!=null){
             loadingDialog.close();
@@ -78,31 +77,36 @@ public abstract class BaseActivity extends AppCompatActivity {
     AlertDialog.Builder alertDialog;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getDisConnectMessage(MessageDisconnect messageDisconnect){
+
         Log.i(TAG, "getDisConnectMessage: 断连重新连接");
         if(connectCount>0) {
             connectCount--;
             mHandler.sendEmptyMessage(CONNECT);
-        }else{
-            onTimeOut(SSLSocketChannel.TIMEOUT);
         }
+//            onTimeOut(SSLSocketChannel.TIMEOUT);
+//            showFailedDialog("连接状态","连接断开，请重连");
+//        }
 
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTimeOut(String timeout) {
         if (timeout.equalsIgnoreCase(SSLSocketChannel.TIMEOUT)) {
-            if(loadingDialog!=null){
-                loadingDialog.close();
-                loadingDialog=null;
-            }
-            alertDialog = new AlertDialog.Builder(mContext, R.style.AlertDialog_Succ).setTitle("连接状态").setCancelable(false).setMessage("连接超时,请重试").setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    connect();
-                    mHandler.sendEmptyMessage(CONNECT);
-                }
-            });
-            alertDialog.show();
+           showFailedDialog("连接状态","连接超时，请重连");
         }
+    }
+    private void showFailedDialog(String title,String message){
+        if(loadingDialog!=null){
+            loadingDialog.close();
+            loadingDialog=null;
+        }
+        alertDialog = new AlertDialog.Builder(mContext, R.style.AlertDialog_Succ).setTitle(title).setCancelable(false).setMessage(message).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                connect();
+                mHandler.sendEmptyMessage(CONNECT);
+            }
+        });
+        alertDialog.show();
     }
     LoadingDialog loadingDialog;
     private void connect(){

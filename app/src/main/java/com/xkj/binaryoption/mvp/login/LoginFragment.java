@@ -33,6 +33,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.regex.Pattern;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -62,7 +64,8 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
     LinearLayout mActivityLogin;
     Unbinder unbinder;
     private LoginPrestener.PreListener mPreListener;
-
+    String regPh = "^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\\d{8}$";
+    String regPassword = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$";
 
 
 
@@ -80,7 +83,7 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
 //        mCetPassword.setText("123456a");
         if(ACache.get(mContext).getAsString(MyConstant.IS_REMEMBER)!=null&&ACache.get(mContext).getAsString(MyConstant.IS_REMEMBER).equals("true")){
             mCbRemember.setChecked(true);
-            if(!ACache.get(mContext).getAsString(MyConstant.user_name).isEmpty()){
+            if(ACache.get(mContext).getAsString(MyConstant.user_name)!=null){
                 mCetAccount.setText(ACache.get(mContext).getAsString(MyConstant.user_name));
                 mCetPassword.setText(AesEncryptionUtil.decrypt(ACache.get(mContext).getAsString(MyConstant.user_password)));
             }
@@ -106,6 +109,9 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.b_login:
+                if (!checkData()){
+                    return;
+                }
                 ThreadHelper.instance().runOnWorkThread(new Runnable() {
                     @Override
                     public void run() {
@@ -123,6 +129,28 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
                 break;
         }
     }
+
+
+    private boolean checkData() {
+        boolean isFit=true;
+        if (mCetAccount.getText().isEmpty() || !Pattern.compile(regPh).matcher(mCetAccount.getText()).matches()) {
+            mCetAccount.setPromptText("请填入正确的手机号码");
+            mCetAccount.setPromptVisibility(View.VISIBLE);
+            isFit=false;
+        } else {
+            mCetAccount.setPromptVisibility(View.INVISIBLE);
+        }
+
+        if (mCetPassword.getText().isEmpty() || !Pattern.compile(regPassword).matcher(mCetPassword.getText()).matches()) {
+            mCetPassword.setPromptText("请输入6到20位数字和字母组合密码");
+            mCetPassword.setPromptVisibility(View.VISIBLE);
+            isFit=false;
+        } else {
+            mCetPassword.setPromptVisibility(View.INVISIBLE);
+        }
+        return isFit;
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTimeOut(String timeout) {
         if (timeout.equalsIgnoreCase(SSLSocketChannel.TIMEOUT)) {
@@ -137,6 +165,7 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
         int code = loginEvent.getResult_code();
         if (code == 0) {
             Log.i(TAG, "onLoginResult: 记录账号密码");
+            //这是手机账号密码，mt4账号在其他地方记住
             ACache.get(mContext).put(MyConstant.user_name,mCetAccount.getText().toString());
             ACache.get(mContext).put(MyConstant.user_password,AesEncryptionUtil.encrypt(mCetPassword.getText().toString()));
             ACache.get(mContext).put(MyConstant.IS_REMEMBER,mCbRemember.isChecked()?"true":"false");
@@ -147,24 +176,25 @@ public class LoginFragment extends BaseFragment implements LoginPrestener.ViewLi
             }else {
                 showfaild("用户名或者密码错误，请重试");
             }
-
 //            mBLogin.setEnabled(true);
         }
     }
+    @Override
     public void onLoginHttpfaild(String faildString){
         showfaild(faildString);
     }
     /**
-     * 获取所有产品，并且订阅
+     * 获取所有订阅产品
      *
      * @param allSymbol
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGetAllSymbol(BeanSymbolConfig allSymbol) {
+    public void onGetAllSubSymbol(BeanSymbolConfig allSymbol) {
         startActivity(new Intent(mContext, TradeActivity.class).putExtra(TradeActivity.ALL_SYMBOLS_DATA,new Gson().toJson(allSymbol,BeanSymbolConfig.class)));
         getActivity().finish();
-        Log.i(SystemUtil.getTAG(this), "onGetAllSymbol: ");
+        Log.i(SystemUtil.getTAG(this), "onGetAllSubSymbol: ");
     }
+
 }
 
 

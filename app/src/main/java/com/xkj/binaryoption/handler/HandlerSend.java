@@ -47,6 +47,7 @@ public class HandlerSend extends Handler {
                 try {
                     if (mSSLSocketChannel != null){
                         mSSLSocketChannel.close();
+                        mSSLSocketChannel=null;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -86,7 +87,7 @@ public class HandlerSend extends Handler {
 //                }
                 if (mSSLSocketChannel!=null)
                 mSSLSocketChannel.send(data);
-
+                Log.i(TAG, "handleMessage: "+data);
                 break;
         }
     }
@@ -94,4 +95,5 @@ public class HandlerSend extends Handler {
     public SSLSocketChannel getSSLSocketChannel() {
         return mSSLSocketChannel;
     }
+
 }

@@ -50,7 +50,6 @@ public class CustomShowPrices extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // TODO Auto-generated method stub
         // super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.d(TAG, "onMeasure-----------");
         setMeasuredDimension(mWidth, mHeight);
     }
 
