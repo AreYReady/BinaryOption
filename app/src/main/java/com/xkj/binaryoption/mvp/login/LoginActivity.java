@@ -12,8 +12,8 @@ import com.xkj.binaryoption.base.BaseFragment;
 import com.xkj.binaryoption.message.MessageDisconnect;
 import com.xkj.binaryoption.message.MessageLostPassword;
 import com.xkj.binaryoption.message.MessageSignUp;
-import com.xkj.binaryoption.mvp.lost_password.LostPassFragment;
-import com.xkj.binaryoption.mvp.sign.SignUpFragment;
+import com.xkj.binaryoption.mvp.login.lostpasswd.LostPasswdFragment;
+import com.xkj.binaryoption.mvp.login.sign.SignUpFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,7 +52,7 @@ public class LoginActivity extends BaseActivity {
     }
     @Subscribe
     public void getMessageLostPassword(MessageLostPassword messageLostPassword){
-        addFragment(R.id.fl_index_context,new LostPassFragment());
+        addFragment(R.id.fl_index_context,new LostPasswdFragment());
     }
 //
 private long exitTime = 0;

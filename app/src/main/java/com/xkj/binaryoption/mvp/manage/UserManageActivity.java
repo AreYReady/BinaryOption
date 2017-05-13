@@ -1,11 +1,12 @@
 package com.xkj.binaryoption.mvp.manage;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.adapter.ManagerAdapter;
@@ -13,10 +14,10 @@ import com.xkj.binaryoption.base.BaseActivity;
 import com.xkj.binaryoption.bean.BeanManages;
 import com.xkj.binaryoption.bean.BeanUserInfo;
 import com.xkj.binaryoption.message.MessageManageItem;
+import com.xkj.binaryoption.mvp.login.LoginActivity;
+import com.xkj.binaryoption.utils.DialogUtils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -32,8 +33,7 @@ import butterknife.OnClick;
 public class UserManageActivity extends BaseActivity {
 
 
-    @BindView(R.id.tv_login)
-    TextView mTvLogin;
+
     @BindView(R.id.fl_index_context)
     FrameLayout mFlIndexContext;
     @BindView(R.id.ll_index)
@@ -54,7 +54,6 @@ public class UserManageActivity extends BaseActivity {
 
     @Override
     public void initRegister() {
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -95,24 +94,30 @@ public class UserManageActivity extends BaseActivity {
             case "实名认证":
                 break;
             case "退出登录":
+                new DialogUtils(mContext, "个人中心", "确定退出登入", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //确定
+                        startActivity(new Intent(mContext, LoginActivity.class));
+                        finish();
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
                 break;
         }
     }
 
-    @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
-    public void eventUserInfo(BeanUserInfo beanUserInfo){
-        mBeanUserInfo=beanUserInfo;
-        if(mTvLogin!=null){
-            mTvLogin.setText(beanUserInfo.getLogin());
-        }
-    }
+
+
     @Override
     protected void initData() {
 
         mItemStrings=getResources().getStringArray(R.array.item_names);
-        if(mBeanUserInfo!=null){
-            mTvLogin.setText(String.valueOf(mBeanUserInfo.getLogin()));
-        }
+
     }
 
     @OnClick({R.id.ll_index, R.id.ll_user_manager})

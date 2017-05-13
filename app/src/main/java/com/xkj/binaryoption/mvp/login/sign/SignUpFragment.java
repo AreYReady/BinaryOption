@@ -1,4 +1,4 @@
-package com.xkj.binaryoption.mvp.sign;
+package com.xkj.binaryoption.mvp.login.sign;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -94,54 +94,26 @@ public class SignUpFragment extends BaseFragment {
     @Override
     protected void initData() {
 
-        mCetCheck.setOnClickCheckCodeListener(new View.OnClickListener() {
+        mCetCheck.setOnClickCheckCodeListener(new CustomEditText.OnClickCheckCodeListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onClick(View view) {
                 Log.i(TAG, "onClick: ");
-              if(!checkPhone()){
-                  return;
-              }
+                if(!checkPhone()){
+                    return false;
+                }
                 if (BeanCurrentServerTime.getInstance().isServerTime()) {
                     sendCodeRequest();
                 }else {
                     sendServerTimeHttpRequest(0);
                 }
+                return true;
             }
         });
-//        mCetAccount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean b) {
-//                if(!b){
-//                    if(!Pattern.compile(regPh).matcher(mCetAccount.getText().toString()).matches()){
-//                        Log.i(TAG, "afterTextChanged: 1");
-//                        mCetAccount.setPromptText("请填入正确的手机号");
-//                        mCetAccount.setPromptVisibility(View.VISIBLE);
-//                    }else{
-//                        Log.i(TAG, "afterTextChanged: 2");
-//                        mCetAccount.setPromptVisibility(View.INVISIBLE);
-//                    }
-//                }
-//            }
-//        });
-//        mCetName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean b) {
-//                if(!b){
-//                    if(!Pattern.compile(regPh).matcher(mCetAccount.getText().toString()).matches()){
-//                        Log.i(TAG, "afterTextChanged: 1");
-//                        mCetAccount.setPromptText("请填入正确的手机号");
-//                        mCetAccount.setPromptVisibility(View.VISIBLE);
-//                    }else{
-//                        Log.i(TAG, "afterTextChanged: 2");
-//                        mCetAccount.setPromptVisibility(View.INVISIBLE);
-//                    }
-//                }
-//            }
-//        });
-        mCetAccount.setText("15059790550");
-        mCetPassword.setText("huang123456");
-        mCetPasswordAgain.setText("huang123456");
-        mCetName.setText("huang");
+
+//        mCetAccount.setText("15059790550");
+//        mCetPassword.setText("huang123456");
+//        mCetPasswordAgain.setText("huang123456");
+//        mCetName.setText("huang");
 
     }
 
@@ -317,6 +289,7 @@ public class SignUpFragment extends BaseFragment {
             mTvConfirmPrompt.setVisibility(View.INVISIBLE);
         }else{
             mTvConfirmPrompt.setVisibility(View.VISIBLE);
+            isFit=false;
         }
         return isFit;
     }

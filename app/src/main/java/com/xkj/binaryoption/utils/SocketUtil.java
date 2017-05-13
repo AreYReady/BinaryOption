@@ -30,8 +30,6 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * @author xjunda
@@ -352,11 +350,7 @@ public class SocketUtil {
             Log.i("123", "doLogin: Receiving response");
             handlerWrite.setSSLSocketChannel(sslSocketChannel);
             handlerWrite.sendEmptyMessage(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return sslSocketChannel;

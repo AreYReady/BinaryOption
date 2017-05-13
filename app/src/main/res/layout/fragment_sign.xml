@@ -29,6 +29,7 @@
         android:id="@+id/cet_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        customEditText:inputType="number"
         customEditText:hint="手机号码（用户名）"
         customEditText:ll_background_style="true"
         customEditText:signImage="@mipmap/phone1"
@@ -47,6 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         customEditText:hint="密码"
+        customEditText:inputType="PASSWORD"
         customEditText:ll_background_style="true"
         customEditText:signImage="@mipmap/pwd1"
         />
@@ -54,6 +56,7 @@
         android:id="@+id/cet_password_again"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        customEditText:inputType="PASSWORD"
         customEditText:hint="确认密码"
         customEditText:ll_background_style="true"
         customEditText:signImage="@mipmap/pwd1"

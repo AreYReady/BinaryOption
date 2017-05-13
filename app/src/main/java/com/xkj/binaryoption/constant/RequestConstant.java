@@ -67,6 +67,8 @@ public interface RequestConstant {
     String xtext="xtext";
     String LEVERAGE="leverage";
     String API_TIPS ="apitips";
+    String NEW_PSWORD ="newpsword";
+    String NEW_GROUP ="newgroup";
 
 
 
@@ -94,6 +96,8 @@ public interface RequestConstant {
         PENDING ("pending"),//挂单交易
         CLOSE("closeDialog"),//③平仓交易
         DELETE("delete"),//删除取消
+        CHANGE_MT_PWD("changemtpwd"),//mt改密
+        CHANGE_MT_GROUP("changemtgroup"),//mt改组
         EDIT("edit");//订单修改
         private final String text;
 

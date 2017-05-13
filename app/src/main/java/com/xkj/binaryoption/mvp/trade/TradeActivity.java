@@ -8,11 +8,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xkj.binaryoption.R;
 import com.xkj.binaryoption.base.BaseActivity;
@@ -167,6 +169,7 @@ public class TradeActivity extends BaseActivity {
                 mTvOrderPending.setTextColor(getResources().getColor(R.color.background_button_orange_normal));
                 mTvOrderTrade.setTextColor(getResources().getColor(R.color.text_color_white));
                 break;
+
         }
     }
     @Subscribe(sticky = true,threadMode = ThreadMode.MAIN)
@@ -192,5 +195,20 @@ public class TradeActivity extends BaseActivity {
         public int getCount() {
             return mFragmentList.size();
         }
+    }
+    private long exitTime = 0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            if((System.currentTimeMillis()-exitTime) > 2000){
+                Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

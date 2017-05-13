@@ -87,7 +87,7 @@ protected View view;
             loadingDialog = new LoadingDialog(mContext);
             loadingDialog.setLoadingText("加载中")
                     //显示加载成功时的文字
-                    .setInterceptBack(false)
+                    .setInterceptBack(true)
                     .setLoadSpeed(SPEED_TWO)
                     .show();
         }

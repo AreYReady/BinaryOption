@@ -26,6 +26,7 @@
         android:singleLine="true"
         android:background="@null"
         android:textColorHint="@android:color/white"
+        style="@style/text_desc_"
         android:textSize="15sp"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/space_xxbig"

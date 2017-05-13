@@ -92,11 +92,13 @@ public class CustomEditText extends FrameLayout {
         mTvCheckCode.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                countdown();
                 if(mOnClickCheckCodeListener!=null&&mTvCheckCode.isClickable()){
-                    mOnClickCheckCodeListener.onClick(view);
+                    if(mOnClickCheckCodeListener.onClick(view)){
+                        countdown();
+                        mTvCheckCode.setClickable(false);
+                    }
                 }
-                mTvCheckCode.setClickable(false);
+
             }
         });
         mEtEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -147,9 +149,12 @@ public class CustomEditText extends FrameLayout {
             mTvCheckCode.setText("剩余"+counDownTime--+"秒");
         }
     };
-    public OnClickListener mOnClickCheckCodeListener;
-    public void setOnClickCheckCodeListener(OnClickListener onClickCheckCodeListener){
+    public OnClickCheckCodeListener mOnClickCheckCodeListener;
+    public void setOnClickCheckCodeListener(OnClickCheckCodeListener onClickCheckCodeListener){
         mOnClickCheckCodeListener=onClickCheckCodeListener;
+    }
+    public interface OnClickCheckCodeListener{
+        boolean onClick(View view);
     }
 
     @Override

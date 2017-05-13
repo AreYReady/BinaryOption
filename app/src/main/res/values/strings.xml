@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BinaryOption</string>
+
         <item type="id" name="tag_first"></item>
         <item type="id" name="tag_second"></item>
     <string-array name="item_names">

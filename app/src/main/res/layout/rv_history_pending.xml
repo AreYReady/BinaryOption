@@ -83,7 +83,7 @@
 
     <LinearLayout
         android:layout_width="0dip"
-        android:layout_weight="280"
+        android:layout_weight="270"
         android:orientation="vertical"
         android:gravity="left|center_vertical"
         android:layout_height="match_parent">
@@ -148,7 +148,7 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="0dip"
-        android:layout_weight="120"
+        android:layout_weight="130"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:layout_height="match_parent">
@@ -160,15 +160,15 @@
             android:text=""/>
         <TextView
             android:id="@+id/tv_profit_amount_desc"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:gravity="center"
             style="@style/text_desc_"
             android:text="盈利金额"/>
         <TextView
             android:id="@+id/tv_profit_amount"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="wrap_content"
             style="@style/text_desc_"
             android:text="￥500"/>

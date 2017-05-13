@@ -13,8 +13,8 @@
     tools:context=".mvp.login.LoginActivity">
     <ImageView
         android:layout_marginTop="45dip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dip"
+        android:layout_height="100dip"
         android:layout_gravity="center_horizontal"
         android:src="@mipmap/icon"/>
     <com.xkj.binaryoption.widget.CustomEditText

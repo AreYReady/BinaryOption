@@ -2,9 +2,6 @@ package com.xkj.binaryoption.base;
 
 import android.app.Activity;
 import android.app.Application;
-import android.os.Handler;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,14 +17,12 @@ public class MyApplication extends Application {
     public static MyApplication getInstance() {
         return instance;
     }
-    public Handler mHandler=new Handler(){};
 
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
         instance = this;
-        EventBus.getDefault().postSticky(mHandler);
     }
 
     private List<Activity> mList = new LinkedList();

@@ -49,6 +49,7 @@ public class CustomKLink extends View {
     private String mMaxPrice = "0";
     private String mMinPrice;
     private String mHeightRang = "0";
+    private int mDigits=0;
     private int begin = 20;
     private RealTimeDataList.BeanRealTime mBeanRaRealTimePrice;
     private RealTimeDataList.BeanRealTime mOldBeanRaRealTimePrice;
@@ -161,7 +162,7 @@ public class CustomKLink extends View {
         } else if (mBeanRaRealTimePrice.getBid() < lastOpenPrice) {
             mRealTimePricesPaint.setColor(getResources().getColor(R.color.text_color_price_fall));
         }
-        int lastY = Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, BigdecimalUtils.movePointRight(String.valueOf(mBeanRaRealTimePrice.getBid()), mBeanHistoryPrices.getDigits())), mHeightUnit)).intValue();
+        int lastY = Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, BigdecimalUtils.movePointRight(String.valueOf(mBeanRaRealTimePrice.getBid()), mDigits)), mHeightUnit)).intValue();
 
         canvas.drawLine(0,
                 lastY,
@@ -214,17 +215,17 @@ public class CustomKLink extends View {
         String mPriceTag;
         for (int i = 0; i < 11; i++) {
             //                     (127887-7)-(1)*i
-            mPriceTag = BigdecimalUtils.movePointLeft(BigdecimalUtils.sub(BigdecimalUtils.sub(mMaxPrice, String.valueOf(residue)), String.valueOf(sub * i)), mBeanHistoryPrices.getDigits());
-            if (Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, BigdecimalUtils.movePointRight(mPriceTag, mBeanHistoryPrices.getDigits())), mHeightUnit)).intValue() > mLinkHeight) {
+            mPriceTag = BigdecimalUtils.movePointLeft(BigdecimalUtils.sub(BigdecimalUtils.sub(mMaxPrice, String.valueOf(residue)), String.valueOf(sub * i)), mDigits);
+            if (Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, BigdecimalUtils.movePointRight(mPriceTag, mDigits)), mHeightUnit)).intValue() > mLinkHeight) {
                 break;
             }
             canvas.drawText(
                     mPriceTag,
                     mLinkWidth + (mWidth - mLinkWidth) / 2,
-                    Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, BigdecimalUtils.movePointRight(mPriceTag, mBeanHistoryPrices.getDigits())), mHeightUnit)).intValue(),
+                    Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice, BigdecimalUtils.movePointRight(mPriceTag, mDigits)), mHeightUnit)).intValue(),
                     mTextPaint);
 
-//            Log.i(TAG, "drawText: max "+mMaxPrice+"  mPriceTag "+mPriceTag+"    y=="+Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice,BigdecimalUtils.movePointRight(mPriceTag,mBeanHistoryPrices.getDigits())), mHeightUnit)).intValue());
+//            Log.i(TAG, "drawText: max "+mMaxPrice+"  mPriceTag "+mPriceTag+"    y=="+Double.valueOf(BigdecimalUtils.mul(BigdecimalUtils.sub(mMaxPrice,BigdecimalUtils.movePointRight(mPriceTag,mDigits)), mHeightUnit)).intValue());
         }
         for (int i = begin - 1; i < mBeanHistoryPrices.getCount(); i = i + 8) {
             canvas.drawText(DateUtils.getShowTimeNoTimeZone(((long) mBeanHistoryPrices.getItems().get(i).getT()) * 1000, "MM-dd HH:mm"), (i - begin + 1) * Float.valueOf(mWidthUnit), mHeight, mTimeTextPaint);
@@ -364,9 +365,10 @@ public class CustomKLink extends View {
         mMaxPrice = BigdecimalUtils.add(mMaxPrice, String.valueOf(Integer.valueOf(mHeightRang) / 4));
         mMinPrice = BigdecimalUtils.sub(mMinPrice, String.valueOf(Integer.valueOf(mHeightRang) / 4));
         mHeightRang = BigdecimalUtils.sub(mMaxPrice, mMinPrice);
+        mDigits=mBeanHistoryPrices.getDigits();
         try {
-            mHeightUnit = BigdecimalUtils.div(String.valueOf(mLinkHeight), String.valueOf(mHeightRang), mBeanHistoryPrices.getDigits());
-            mWidthUnit = BigdecimalUtils.div("" + mLinkWidth, "" + (mBeanHistoryPrices.getCount() - begin), mBeanHistoryPrices.getDigits());
+            mHeightUnit = BigdecimalUtils.div(String.valueOf(mLinkHeight), String.valueOf(mHeightRang), mDigits);
+            mWidthUnit = BigdecimalUtils.div("" + mLinkWidth, "" + (mBeanHistoryPrices.getCount() - begin), mDigits);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -391,25 +393,25 @@ public class CustomKLink extends View {
             }
             String[] split = mBeanHistoryPrices.getItems().get(index + begin>=mBeanHistoryPrices.getCount()?mBeanHistoryPrices.getCount()-1:index+begin).getO().split("\\|");
             beanShowPrices.setTime(DateUtils.getShowTimeNoTimeZone((long)mBeanHistoryPrices.getItems().get(index + begin>=mBeanHistoryPrices.getCount()?mBeanHistoryPrices.getCount()-1:index+begin).getT()*1000));
-            beanShowPrices.setOpenPrice(split[0]);
-            beanShowPrices.setMaxPrice(BigdecimalUtils.add(split[0], split[1]));
-            beanShowPrices.setMinPrices(BigdecimalUtils.add(split[0], split[2]));
-            beanShowPrices.setClosePrice(BigdecimalUtils.add(split[0], split[3]));
+            beanShowPrices.setOpenPrice(BigdecimalUtils.movePointLeft(split[0],mDigits));
+            beanShowPrices.setMaxPrice(BigdecimalUtils.movePointLeft(BigdecimalUtils.add(split[0], split[1]),mDigits));
+            beanShowPrices.setMinPrices(BigdecimalUtils.movePointLeft(BigdecimalUtils.add(split[0], split[2]),mDigits));
+            beanShowPrices.setClosePrice(BigdecimalUtils.movePointLeft(BigdecimalUtils.add(split[0], split[3]),mDigits));
             String meanPrice = "0";
             for (int b = 0; b < 5; b++) {
                 meanPrice = BigdecimalUtils.add(meanPrice, mClosePriceList.get(mClosePriceList.size() - 5 + b));
             }
-            beanShowPrices.setM5Price(BigdecimalUtils.div(meanPrice, "5", 0));
+            beanShowPrices.setM5Price(BigdecimalUtils.movePointLeft(BigdecimalUtils.div(meanPrice, "5", 0),mDigits));
             meanPrice = "0";
             for (int b = 0; b < 10; b++) {
                 meanPrice = BigdecimalUtils.add(meanPrice, mClosePriceList.get(mClosePriceList.size() - 10 + b));
             }
-            beanShowPrices.setM10Price(BigdecimalUtils.div(meanPrice, "10", 0));
+            beanShowPrices.setM10Price(BigdecimalUtils.movePointLeft(BigdecimalUtils.div(meanPrice, "10", 0),mDigits));
             meanPrice = "0";
             for (int b = 0; b < 20; b++) {
                 meanPrice = BigdecimalUtils.add(meanPrice, mClosePriceList.get(mClosePriceList.size() - 20 + b));
             }
-            beanShowPrices.setM20Price(BigdecimalUtils.div(meanPrice, "20", 0));
+            beanShowPrices.setM20Price(BigdecimalUtils.movePointLeft(BigdecimalUtils.div(meanPrice, "20", 0),mDigits));
 
         } catch (IllegalAccessException e) {
             e.printStackTrace();

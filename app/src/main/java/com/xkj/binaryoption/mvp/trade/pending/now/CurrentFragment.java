@@ -113,9 +113,11 @@ public class CurrentFragment extends BaseFragment {
             if(mBeanCurrentOrder.getOrders()==null){
                 mBeanCurrentOrder.setOrders(new ArrayList<BeanCurrentOrder.OrdersBean>());
             }
-            for(int i=0;i<mBeanCurrentOrder.getOrders().size();i++){
-                if(mBeanCurrentOrder.getOrders().get(i).getTicket()==beanOrderResult.getTicket()){
-                    return;
+            if(mBeanCurrentOrder.getOrders().size()!=0) {
+                for (int i = 0; i < mBeanCurrentOrder.getOrders().size(); i++) {
+                    if (mBeanCurrentOrder.getOrders().get(i).getTicket() == beanOrderResult.getTicket()) {
+                        return;
+                    }
                 }
             }
             BeanCurrentOrder.OrdersBean ordersBean=new BeanCurrentOrder.OrdersBean();
@@ -140,8 +142,8 @@ public class CurrentFragment extends BaseFragment {
                     ThreadHelper.instance().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mCurrentOrderAdapter.notifyItemRemoved(finalI);
                             mBeanCurrentOrder.getOrders().remove(finalI);
+                            mCurrentOrderAdapter.notifyItemRemoved(finalI);
                         }
                     });
                 }

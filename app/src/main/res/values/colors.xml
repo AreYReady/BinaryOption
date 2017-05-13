@@ -6,7 +6,8 @@
 
     <color name="background">#292929</color>
     <color name="background_char">#222222</color>
-    <color name="background_button_orange">#ffb029</color>
+    <color name="background_button_orange">#99ffb029</color>
+    <color name="background_button_orange_sign">#55ffb029</color>
     <color name="background_button_orange_normal">#fe853c</color>
     <color name="background_button_red">#cc0000</color>
     <color name="background_button_red_normal">#55cc0000</color>

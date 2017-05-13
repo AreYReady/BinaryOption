@@ -64,14 +64,16 @@ public class HistoryOrderAdapter extends RecyclerView.Adapter<HistoryOrderAdapte
                 holder.mTvProfitAmount.setTextColor(mContext.getResources().getColor(R.color.text_color_price_fall));
                 holder.mTvProfitAmountDesc.setTextColor(mContext.getResources().getColor(R.color.text_color_price_fall));
                 holder.mTvProfitAmountDesc.setText("亏损金额");
-                holder.mTvProfitAmount.setText("-"+BigdecimalUtils.mul(String.valueOf(itemsBean.getMoney()),BigdecimalUtils.movePointLeft(String.valueOf(itemsBean.getCommision_level()),2)));
+                holder.mTvProfitAmount.setText("-"+itemsBean.getMoney());
                 break;
             case 2://盈利
                 holder.mTvProfitAmount.setTextColor(mContext.getResources().getColor(R.color.text_color_price_rise));
                 holder.mTvProfitAmountDesc.setTextColor(mContext.getResources().getColor(R.color.text_color_price_rise));
+                holder.mTvProfitAmountDesc.setText("盈利金额");
                 holder.mTvProfitAmount.setText(BigdecimalUtils.mul(String.valueOf(itemsBean.getMoney()),BigdecimalUtils.movePointLeft(String.valueOf(itemsBean.getCommision_level()),2)));
                 break;
             case 3://平
+                holder.mTvProfitAmountDesc.setText("不亏不赚");
                 holder.mTvProfitAmount.setTextColor(mContext.getResources().getColor(R.color.text_color_price_ping));
                 holder.mTvProfitAmountDesc.setTextColor(mContext.getResources().getColor(R.color.text_color_price_ping));
                 holder.mTvProfitAmount.setText("0.0");

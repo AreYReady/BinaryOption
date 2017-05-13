@@ -42,6 +42,7 @@ public class HandlerSend extends Handler {
     @Override
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
+        Log.i(TAG, "handleMessage: "+msg.obj);
         switch (msg.what) {
             case CONNECT://连接
                 try {

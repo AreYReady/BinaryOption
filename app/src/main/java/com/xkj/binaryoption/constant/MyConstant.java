@@ -17,7 +17,8 @@ public  class MyConstant {
     public static String user_name_mt4="Login_mt4";
     public static String user_password="password";
     public static String IS_REMEMBER="is_remember";
-
+    public static String  regPh = "^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\\d{8}$";
+    public static String regPassword = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$";
 
 
 
